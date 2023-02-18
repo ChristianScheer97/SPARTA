@@ -268,43 +268,12 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* remove slider bit of these sliders */
     SL_num_sources->setColour(Slider::trackColourId, Colours::transparentBlack);
-    SL_num_sources->setSliderStyle(Slider::SliderStyle::LinearBarVertical);
-    SL_num_sources->setSliderSnapsToMousePosition(false);
+
 
     /* interp modes */
     CBinterpMode->addItem(TRANS("Triangular"), INTERP_TRI);
     CBinterpMode->addItem(TRANS("Triangular (PS)"), INTERP_TRI_PS);
-
-    /* add source preset options */
-    CBsourceDirsPreset->addItem (TRANS("Mono"), SOURCE_CONFIG_PRESET_MONO);
-    CBsourceDirsPreset->addItem (TRANS("Stereo"), SOURCE_CONFIG_PRESET_STEREO);
-    CBsourceDirsPreset->addItem (TRANS("5.x"), SOURCE_CONFIG_PRESET_5PX);
-    CBsourceDirsPreset->addItem (TRANS("7.x"), SOURCE_CONFIG_PRESET_7PX);
-    CBsourceDirsPreset->addItem (TRANS("8.x"), SOURCE_CONFIG_PRESET_8PX);
-    CBsourceDirsPreset->addItem (TRANS("9.x"), SOURCE_CONFIG_PRESET_9PX);
-    CBsourceDirsPreset->addItem (TRANS("10.x"), SOURCE_CONFIG_PRESET_10PX);
-    CBsourceDirsPreset->addItem (TRANS("11.x"), SOURCE_CONFIG_PRESET_11PX);
-    CBsourceDirsPreset->addItem (TRANS("11.x (7+4)"), SOURCE_CONFIG_PRESET_11PX_7_4);
-    CBsourceDirsPreset->addItem (TRANS("13.x"), SOURCE_CONFIG_PRESET_13PX);
-    CBsourceDirsPreset->addItem (TRANS("22.x"), SOURCE_CONFIG_PRESET_22PX);
-    CBsourceDirsPreset->addItem (TRANS("9+10+3.2"), SOURCE_CONFIG_PRESET_22P2_9_10_3);
-    CBsourceDirsPreset->addItem (TRANS("Aalto MCC"), SOURCE_CONFIG_PRESET_AALTO_MCC);
-    CBsourceDirsPreset->addItem (TRANS("Aalto MCC-subset"), SOURCE_CONFIG_PRESET_AALTO_MCC_SUBSET);
-    CBsourceDirsPreset->addItem (TRANS("Aalto Apaja"), SOURCE_CONFIG_PRESET_AALTO_APAJA);
-    CBsourceDirsPreset->addItem (TRANS("Aalto LR"), SOURCE_CONFIG_PRESET_AALTO_LR);
-    CBsourceDirsPreset->addItem (TRANS("DTU AVIL"), SOURCE_CONFIG_PRESET_DTU_AVIL);
-    CBsourceDirsPreset->addItem (TRANS("Zylia Lab (22.x)"), SOURCE_CONFIG_PRESET_ZYLIA_LAB);
-    CBsourceDirsPreset->addItem (TRANS("T-design (4)"), SOURCE_CONFIG_PRESET_T_DESIGN_4);
-    CBsourceDirsPreset->addItem (TRANS("T-design (12)"), SOURCE_CONFIG_PRESET_T_DESIGN_12);
-    CBsourceDirsPreset->addItem (TRANS("T-design (24)"), SOURCE_CONFIG_PRESET_T_DESIGN_24);
-    CBsourceDirsPreset->addItem (TRANS("T-design (36)"), SOURCE_CONFIG_PRESET_T_DESIGN_36);
-    CBsourceDirsPreset->addItem (TRANS("T-design (48)"), SOURCE_CONFIG_PRESET_T_DESIGN_48);
-    CBsourceDirsPreset->addItem (TRANS("T-design (60)"), SOURCE_CONFIG_PRESET_T_DESIGN_60);
-    CBsourceDirsPreset->addItem (TRANS("SphCov (9)"), SOURCE_CONFIG_PRESET_SPH_COV_9);
-    CBsourceDirsPreset->addItem (TRANS("SphCov (16)"), SOURCE_CONFIG_PRESET_SPH_COV_16);
-    CBsourceDirsPreset->addItem (TRANS("SphCov (25)"), SOURCE_CONFIG_PRESET_SPH_COV_25);
-    CBsourceDirsPreset->addItem (TRANS("SphCov (49)"), SOURCE_CONFIG_PRESET_SPH_COV_49);
-    CBsourceDirsPreset->addItem (TRANS("SphCov (64)"), SOURCE_CONFIG_PRESET_SPH_COV_64);
+    
 
     /* ProgressBar */
     progress = 0.0;
@@ -334,7 +303,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     /* grab current parameter settings */
     TBuseDefaultHRIRs->setToggleState(binauraliser_getUseDefaultHRIRsflag(hBin), dontSendNotification);
-    SL_num_sources->setValue(binauraliser_getNumSources(hBin),dontSendNotification);
+    SL_num_sources->setText(juce::String(binauraliser_getNumSources(hBin)), juce::dontSendNotification);
+/*SL_num_sources->setValue(binauraliser_getNumSources(hBin),dontSendNotification); */
     TB_showInputs->setToggleState(true, dontSendNotification);
     TB_showOutputs->setToggleState(false, dontSendNotification);
     CBinterpMode->setSelectedId(binauraliser_getInterpMode(hBin), dontSendNotification);
@@ -357,7 +327,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     refreshPanViewWindow = true;
 
     /* tooltips */
-    CBsourceDirsPreset->setTooltip("Presets for source directions to use for spatialisation.");
     TBuseDefaultHRIRs->setTooltip("If this is 'ticked', the plug-in is using the default HRIR set from the Spatial_Audio_Framework.");
     fileChooser.setTooltip("Optionally, a custom HRIR set may be loaded via the SOFA standard. Note that if the plug-in fails to load the specified .sofa file, it will revert to the default HRIR data.");
     CBinterpMode->setTooltip("Interpolation approach. Note that this plug-in can also perform \"phase-simplification\" (PS) of the HRTFs, which involves estimating the ITDs for all the HRIRs, removing the phase from the HRTFs, but then re-introducing the phase as IPDs per frequency-bin. Note that binaural room impulse responses (BRIRs) are not supported by either of the two modes!");
@@ -1186,8 +1155,8 @@ void PluginEditor::timerCallback(int timerID)
                 TBuseDefaultHRIRs->setToggleState(binauraliser_getUseDefaultHRIRsflag(hBin), dontSendNotification);
             if(binauraliser_getEnableHRIRsDiffuseEQ(hBin)!=TBenablePreProc->getToggleState())
                 TBenablePreProc->setToggleState(binauraliser_getEnableHRIRsDiffuseEQ(hBin), dontSendNotification);
-            if(binauraliser_getNumSources(hBin)!=SL_num_sources->getValue())
-                SL_num_sources->setValue(binauraliser_getNumSources(hBin),dontSendNotification);
+            if(binauraliser_getNumSources(hBin)!=SL_num_sources->getText().getIntValue())
+                SL_num_sources->setText(juce::String(binauraliser_getNumSources(hBin)),dontSendNotification);
             if(binauraliser_getYaw(hBin)!=s_yaw->getValue())
                 s_yaw->setValue(binauraliser_getYaw(hBin), dontSendNotification);
             if(binauraliser_getPitch(hBin)!=s_pitch->getValue())
@@ -1208,8 +1177,8 @@ void PluginEditor::timerCallback(int timerID)
 
             /* disable certain parameters if currently initialising */
             if(binauraliser_getCodecStatus(hBin)==CODEC_STATUS_INITIALISING){
-                if(CBsourceDirsPreset->isEnabled())
-                   CBsourceDirsPreset->setEnabled(false);
+                /*if(CBsourceDirsPreset->isEnabled())
+                   CBsourceDirsPreset->setEnabled(false); */
                 if(SL_num_sources->isEnabled())
                     SL_num_sources->setEnabled(false);
                 if(TBuseDefaultHRIRs->isEnabled())
@@ -1224,8 +1193,8 @@ void PluginEditor::timerCallback(int timerID)
                    sourceCoordsVP->setEnabled(false);
             }
             else{
-                if(!CBsourceDirsPreset->isEnabled())
-                    CBsourceDirsPreset->setEnabled(true);
+                /*if(!CBsourceDirsPreset->isEnabled())
+                    CBsourceDirsPreset->setEnabled(true); */
                 if(!SL_num_sources->isEnabled())
                     SL_num_sources->setEnabled(true);
                 if(!TBuseDefaultHRIRs->isEnabled())
