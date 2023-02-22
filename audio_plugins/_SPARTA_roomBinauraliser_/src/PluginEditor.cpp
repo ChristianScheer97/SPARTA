@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 7.0.2
+  Created with Projucer version: 7.0.5
 
   ------------------------------------------------------------------------------
 
@@ -114,26 +114,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     CBinterpMode->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     CBinterpMode->addListener (this);
 
-    CBinterpMode->setBounds (316, 324, 125, 20);
-
-    tb_loadJSON.reset (new juce::TextButton ("new button"));
-    addAndMakeVisible (tb_loadJSON.get());
-    tb_loadJSON->setButtonText (TRANS("Import"));
-    tb_loadJSON->setConnectedEdges (juce::Button::ConnectedOnRight);
-    tb_loadJSON->addListener (this);
-    tb_loadJSON->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff14889e));
-
-    tb_loadJSON->setBounds (140, 40, 34, 14);
-
-    tb_saveJSON.reset (new juce::TextButton ("new button"));
-    addAndMakeVisible (tb_saveJSON.get());
-    tb_saveJSON->setButtonText (TRANS("Export"));
-    tb_saveJSON->setConnectedEdges (juce::Button::ConnectedOnLeft);
-    tb_saveJSON->addListener (this);
-    tb_saveJSON->setColour (juce::TextButton::buttonColourId, juce::Colour (0xff224d97));
-    tb_saveJSON->setColour (juce::TextButton::buttonOnColourId, juce::Colour (0xff181f9a));
-
-    tb_saveJSON->setBounds (174, 40, 34, 14);
+    CBinterpMode->setBounds (336, 324, 105, 20);
 
     s_yaw.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_yaw.get());
@@ -273,7 +254,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* interp modes */
     CBinterpMode->addItem(TRANS("Triangular"), INTERP_TRI);
     CBinterpMode->addItem(TRANS("Triangular (PS)"), INTERP_TRI_PS);
-    
+
 
     /* ProgressBar */
     progress = 0.0;
@@ -345,8 +326,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_DAW_fs->setTooltip("Current sampling rate, as dictated by the DAW/Host.");
     TB_showInputs->setTooltip("Enables/Disables displaying the source directions in the panning window.");
     TB_showOutputs->setTooltip("Enables/Disables displaying the HRIR directions in the panning window.");
-    tb_loadJSON->setTooltip("Loads source directions from a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
-    tb_saveJSON->setTooltip("Saves the current source directions to a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
+    //tb_loadJSON->setTooltip("Loads source directions from a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
+    //tb_saveJSON->setTooltip("Saves the current source directions to a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
     TBenablePreProc->setTooltip("Enables/Disables Diffuse-field EQ of the HRIRs, which is based on a weighted summation of all the HRTF magnitudes in the currently loaded set.");
 
     /* Plugin description */
@@ -379,8 +360,6 @@ PluginEditor::~PluginEditor()
     TB_showOutputs = nullptr;
     label_N_Tri = nullptr;
     CBinterpMode = nullptr;
-    tb_loadJSON = nullptr;
-    tb_saveJSON = nullptr;
     s_yaw = nullptr;
     s_pitch = nullptr;
     s_roll = nullptr;
@@ -556,18 +535,6 @@ void PluginEditor::paint (juce::Graphics& g)
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.setFont (juce::Font (14.50f, juce::Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
-    {
-        int x = 84, y = 32, width = 113, height = 30;
-        juce::String text (TRANS("Inputs"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
         g.drawText (text, x, y, width, height,
                     juce::Justification::centredLeft, true);
     }
@@ -851,8 +818,8 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 92, y = 1, width = 112, height = 32;
-        juce::String text (TRANS("Binauraliser"));
+        int x = 92, y = 1, width = 164, height = 32;
+        juce::String text (TRANS("roomBinauraliser"));
         juce::Colour fillColour = juce::Colour (0xffff73f9);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -931,7 +898,7 @@ void PluginEditor::paint (juce::Graphics& g)
 	g.setColour(Colours::white);
 	g.setFont(Font(11.00f, Font::plain));
 	g.drawText(TRANS("Ver ") + JucePlugin_VersionString + BUILD_VER_SUFFIX + TRANS(", Build Date ") + __DATE__ + TRANS(" "),
-		200, 16, 530, 11,
+		250, 16, 530, 11,
 		Justification::centredLeft, true);
 
     /* display warning message */
@@ -1012,39 +979,6 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
         panWindow->setShowOutputs(TB_showOutputs->getToggleState());
         refreshPanViewWindow = true;
         //[/UserButtonCode_TB_showOutputs]
-    }
-    else if (buttonThatWasClicked == tb_loadJSON.get())
-    {
-        //[UserButtonCode_tb_loadJSON] -- add your button handler code here..
-        chooser = std::make_unique<juce::FileChooser> ("Load configuration...",
-                                                       hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
-                                                       "*.json");
-        auto chooserFlags = juce::FileBrowserComponent::openMode
-                                  | juce::FileBrowserComponent::canSelectFiles;
-        chooser->launchAsync (chooserFlags, [this] (const FileChooser& fc) {
-            auto file = fc.getResult();
-            if (file != File{}){
-                hVst->setLastDir(file.getParentDirectory());
-                hVst->loadConfiguration (file);
-            }
-        });
-        //[/UserButtonCode_tb_loadJSON]
-    }
-    else if (buttonThatWasClicked == tb_saveJSON.get())
-    {
-        //[UserButtonCode_tb_saveJSON] -- add your button handler code here..
-        chooser = std::make_unique<juce::FileChooser> ("Save configuration...",
-                                                       hVst->getLastDir().exists() ? hVst->getLastDir() : File::getSpecialLocation (File::userHomeDirectory),
-                                                       "*.json");
-        auto chooserFlags = juce::FileBrowserComponent::saveMode;
-        chooser->launchAsync (chooserFlags, [this] (const FileChooser& fc) {
-            auto file = fc.getResult();
-            if (file != File{}) {
-                hVst->setLastDir(file.getParentDirectory());
-                hVst->saveConfigurationToFile (file);
-            }
-        });
-        //[/UserButtonCode_tb_saveJSON]
     }
     else if (buttonThatWasClicked == t_flipYaw.get())
     {
@@ -1185,8 +1119,10 @@ void PluginEditor::timerCallback(int timerID)
                     TBuseDefaultHRIRs->setEnabled(false);
                 if(CBinterpMode->isEnabled())
                     CBinterpMode->setEnabled(false);
+                /*
                 if(tb_loadJSON->isEnabled())
                     tb_loadJSON->setEnabled(false);
+                */
                 if(fileChooser.isEnabled())
                    fileChooser.setEnabled(false);
                 if(sourceCoordsVP->isEnabled())
@@ -1201,8 +1137,10 @@ void PluginEditor::timerCallback(int timerID)
                     TBuseDefaultHRIRs->setEnabled(true);
                 if(!CBinterpMode->isEnabled())
                     CBinterpMode->setEnabled(true);
+                /*
                 if(!tb_loadJSON->isEnabled())
                     tb_loadJSON->setEnabled(true);
+                */
                 if(!fileChooser.isEnabled())
                     fileChooser.setEnabled(true);
                 if(!sourceCoordsVP->isEnabled())
@@ -1293,9 +1231,6 @@ BEGIN_JUCER_METADATA
     <TEXT pos="23 88 153 30" fill="solid: ffffffff" hasStroke="0" text="Number of Emitters"
           fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="84 32 113 30" fill="solid: ffffffff" hasStroke="0" text="Inputs"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="788 32 113 30" fill="solid: ffffffff" hasStroke="0" text="BRIRs"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
@@ -1363,7 +1298,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="16 1 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
           fontname="Default font" fontsize="18.8" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="92 1 112 32" fill="solid: ffff73f9" hasStroke="0" text="Binauraliser"
+    <TEXT pos="92 1 164 32" fill="solid: ffff73f9" hasStroke="0" text="roomBinauraliser"
           fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="66 122 108 28" fill="solid: ffffffff" hasStroke="0" text="Azi&#176;   #   Elev&#176;"
@@ -1411,15 +1346,8 @@ BEGIN_JUCER_METADATA
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <COMBOBOX name="new combo box" id="aeb0b2f644784061" memberName="CBinterpMode"
-            virtualName="" explicitFocusOrder="0" pos="316 324 125 20" editable="0"
+            virtualName="" explicitFocusOrder="0" pos="336 324 105 20" editable="0"
             layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
-  <TEXTBUTTON name="new button" id="527e24c6748d02d4" memberName="tb_loadJSON"
-              virtualName="" explicitFocusOrder="0" pos="140 40 34 14" bgColOff="ff14889e"
-              buttonText="Import" connectedEdges="2" needsCallback="1" radioGroupId="0"/>
-  <TEXTBUTTON name="new button" id="48c5d3526dcfe64f" memberName="tb_saveJSON"
-              virtualName="" explicitFocusOrder="0" pos="174 40 34 14" bgColOff="ff224d97"
-              bgColOn="ff181f9a" buttonText="Export" connectedEdges="1" needsCallback="1"
-              radioGroupId="0"/>
   <SLIDER name="new slider" id="ace036a85eec9703" memberName="s_yaw" virtualName=""
           explicitFocusOrder="0" pos="717 260 60 68" rotarysliderfill="ff315b6e"
           rotaryslideroutline="ff5c5d5e" textboxtext="ffffffff" textboxbkgd="ffffff"

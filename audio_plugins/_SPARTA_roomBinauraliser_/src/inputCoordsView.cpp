@@ -59,6 +59,7 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
     currentNCH =_currentNCH;
     aziSliders =  new std::unique_ptr<Slider>[(unsigned long)maxNCH];
     elevSliders =  new std::unique_ptr<Slider>[(unsigned long)maxNCH];
+    emitterButtons = new std::unique_ptr<TextButton>[(unsigned long)maxNCH];
 
     for( int i=0; i<maxNCH; i++){
         /* create and initialise azimuth sliders */
@@ -70,6 +71,8 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
         aziSliders[i]->setTextBoxStyle (Slider::TextBoxRight, false, 70, 20);
         aziSliders[i]->setBounds(-25, 8 + i*sensorEdit_height, 96, 16);
         aziSliders[i]->addListener (this);
+        aziSliders[i]->setTextBoxIsEditable(false);
+        aziSliders[i]->setValue(-90, juce::sendNotificationSync); // just for debugging
 
         /* create and initialise elevation sliders */
         elevSliders[i].reset (new Slider ("new slider"));
@@ -80,6 +83,17 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
         elevSliders[i]->setTextBoxStyle (Slider::TextBoxLeft, false, 70, 20);
         elevSliders[i]->setBounds(105, 8 + i*sensorEdit_height, 96, 16);
         elevSliders[i]->addListener (this);
+        elevSliders[i]->setTextBoxIsEditable(false);
+
+        /* create and initialise emitter number button */
+        emitterButtons[i].reset(new TextButton(String(i+1), "Enable/Disable emitter."));
+        addAndMakeVisible(emitterButtons[i].get());
+        emitterButtons[i]->setBounds(75, 5 + i * sensorEdit_height, 27, 23);
+        emitterButtons[i]->setClickingTogglesState(true);
+        emitterButtons[i]->setToggleState(true, true);
+
+        //g.drawText(String(i + 1), 72, 5 + i * sensorEdit_height, 33, 23,
+        //    Justification::centred, true);
     }
 
     sliderHasChanged = true;
@@ -153,8 +167,7 @@ void inputCoordsView::paint (juce::Graphics& g)
     for( int i=0; i<maxNCH; i++){
         /* draw sensor IDs */
         g.setColour (fillColour);
-        g.drawText (String(i+1), 72, 5+ i*sensorEdit_height, 33, 23,
-                    Justification::centred, true);
+
 
         /* draw rectangle around sensor parameter */
         //Colour strokeColour = Colour (0x2370702b);

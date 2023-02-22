@@ -195,6 +195,7 @@ void pannerView::resized()
 
 void pannerView::mouseDown (const juce::MouseEvent& e)
 {
+    /*
     //[UserCode_mouseDown] -- Add your code here...
     for(int i=0; i<NSources; i++){
         Rectangle<int> icon_int;
@@ -215,10 +216,12 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
         }
     }
     //[/UserCode_mouseDown]
+    */
 }
 
 void pannerView::mouseDrag (const juce::MouseEvent& e)
 {
+    /*
     //[UserCode_mouseDrag] -- Add your code here...
     if(sourceIconIsClicked){
         Point<float> point;
@@ -230,10 +233,12 @@ void pannerView::mouseDrag (const juce::MouseEvent& e)
     }
 
     //[/UserCode_mouseDrag]
+    */
 }
 
 void pannerView::mouseUp (const juce::MouseEvent& e)
 {
+    /*
     //[UserCode_mouseUp] -- Add your code here...
     sourceIconIsClicked = false;
     // UnSolo on ALT if not clicked on Source
@@ -243,6 +248,7 @@ void pannerView::mouseUp (const juce::MouseEvent& e)
     }
     repaint();
     //[/UserCode_mouseUp]
+    */
 }
 
 
