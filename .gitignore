@@ -14,7 +14,6 @@ lib/
 .idea/
 cmake-build-debug/
 cmake-build-release/
-assets/BRIRs/
 .vs/
 
 # User-specific files
@@ -22,6 +21,7 @@ assets/BRIRs/
 *.user
 *.userosscache
 *.sln.docstates
+*.sofa
 
 # Visual C++ cache files
 ipch/
