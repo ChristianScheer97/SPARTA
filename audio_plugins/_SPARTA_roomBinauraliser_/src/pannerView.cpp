@@ -158,28 +158,38 @@ void pannerView::paint (juce::Graphics& g)
     if(showInputs){
         /* Draw Source icons */
         for(int src=0; src<NSources; src++){
-            if (!hiddenEmitters.contains(src)) {
+            if (!hiddenEmitters.contains(src)) { // non-hidden emitters
                 /* icon */
                 //g.setColour(Colour::fromFloatRGBA(1.0-((float)src/(float)NSources), 0.3f, ((float)src/(float)NSources), 1.0f));
-                g.setColour(Colour::fromFloatRGBA(1.0f, 0.0f, 1.0f, 0.85f));
-                
+                g.setColour(Colour::fromFloatRGBA(1.0f, 0.13f, 0.0f, 1.0f));
+                //setColourGradient(g, (float)src/(float)NSources);
+                g.setOpacity(0.2f);
+                g.fillEllipse(SourceIcons[src].expanded(8.0f,8.0f));
+                g.setOpacity(0.4f);
+                g.fillEllipse(SourceIcons[src].expanded(4.0f, 4.0f));
+                g.setOpacity(0.85f);
+                g.fillEllipse(SourceIcons[src]);
+                /* icon ID */
+                g.setColour(Colours::white);
+                g.setOpacity(0.9f);
+                g.drawText(String(src+1), SourceIcons[src].expanded(10.0f, 0.0f), Justification::centred, true); // .translated(icon_size, -icon_size)
             }
-            else
+            else // hidden emitters
             {
                 g.setColour(Colour::fromFloatRGBA(0.5f, 0.5f, 0.5f, 0.15f));
-
+                //setColourGradient(g, (float)src/(float)NSources);
+                g.setOpacity(0.2f);
+                g.fillEllipse(SourceIcons[src].expanded(8.0f,8.0f));
+                g.setOpacity(0.4f);
+                g.fillEllipse(SourceIcons[src].expanded(4.0f, 4.0f));
+                g.setOpacity(0.85f);
+                g.fillEllipse(SourceIcons[src]);
+                /* icon ID */
+                g.setColour(Colours::lightgrey);
+                g.setOpacity(0.9f);
+                g.drawText(String(src+1), SourceIcons[src].expanded(10.0f, 0.0f), Justification::centred, true); // .translated(icon_size, -icon_size)
             }
-            //setColourGradient(g, (float)src/(float)NSources);
-            g.setOpacity(0.2f);
-            g.fillEllipse(SourceIcons[src].expanded(8.0f,8.0f));
-            g.setOpacity(0.4f);
-            g.fillEllipse(SourceIcons[src].expanded(4.0f, 4.0f));
-            g.setOpacity(0.85f);
-            g.fillEllipse(SourceIcons[src]);
-            /* icon ID */
-            g.setColour(Colours::white);
-            g.setOpacity(0.9f);
-            g.drawText(String(src+1), SourceIcons[src].expanded(10.0f, 0.0f), Justification::centred, true); // .translated(icon_size, -icon_size)
+            
         }
     }
 

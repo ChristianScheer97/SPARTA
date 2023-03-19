@@ -66,6 +66,7 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
         aziSliders[i].reset (new Slider ("new slider"));
         addAndMakeVisible (aziSliders[i].get());
         aziSliders[i]->setRange (-360.0, 360.0, 0.001);
+        aziSliders[i]->setNumDecimalPlacesToDisplay(1);
         aziSliders[i]->setValue(binauraliser_getSourceAzi_deg(hBin, i));
         aziSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         aziSliders[i]->setTextBoxStyle (Slider::TextBoxRight, false, 70, 20);
@@ -73,17 +74,22 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
         aziSliders[i]->addListener (this);
         aziSliders[i]->setTextBoxIsEditable(false);
         aziSliders[i]->setValue(-90, juce::sendNotificationSync); // just for debugging
-
+        aziSliders[i]->setColour(juce::Slider::textBoxTextColourId, Colours::red);
+        aziSliders[i]->setColour(juce::Slider::textBoxOutlineColourId, Colours::darkred);
+        
         /* create and initialise elevation sliders */
         elevSliders[i].reset (new Slider ("new slider"));
         addAndMakeVisible (elevSliders[i].get());
         elevSliders[i]->setRange (-180.0, 180.0, 0.001);
+        elevSliders[i]->setNumDecimalPlacesToDisplay(1);
         elevSliders[i]->setValue(binauraliser_getSourceElev_deg(hBin, i));
         elevSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         elevSliders[i]->setTextBoxStyle (Slider::TextBoxLeft, false, 70, 20);
         elevSliders[i]->setBounds(105, 8 + i*sensorEdit_height, 96, 16);
         elevSliders[i]->addListener (this);
         elevSliders[i]->setTextBoxIsEditable(false);
+        elevSliders[i]->setColour(juce::Slider::textBoxTextColourId, Colours::red);
+        elevSliders[i]->setColour(juce::Slider::textBoxOutlineColourId, Colours::darkred);
 
         /* create and initialise emitter number button */
         emitterButtons[i].reset(new TextButton(String(i+1), "Enable/Disable emitter."));
@@ -91,7 +97,21 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
         emitterButtons[i]->setBounds(75, 5 + i * sensorEdit_height, 27, 23);
         emitterButtons[i]->setClickingTogglesState(true);
         emitterButtons[i]->setToggleState(true, dontSendNotification);
-        emitterButtons[i]->onClick = [this, i](){onEmitterButtonChange(i);};
+        emitterButtons[i]->setColour(juce::TextButton::buttonOnColourId, Colours::darkred);
+        emitterButtons[i]->onClick = [this, i]()
+        {
+            onEmitterButtonChange(i);
+            if (elevSliders[i]->findColour(juce::Slider::textBoxTextColourId) == Colours::red)
+            {
+                elevSliders[i]->setColour(juce::Slider::textBoxTextColourId, Colours::grey);
+                aziSliders[i]->setColour(juce::Slider::textBoxTextColourId, Colours::grey);
+            }
+            else
+            {
+                elevSliders[i]->setColour(juce::Slider::textBoxTextColourId, Colours::red);
+                aziSliders[i]->setColour(juce::Slider::textBoxTextColourId, Colours::red);
+            }
+        };
 
         //g.drawText(String(i + 1), 72, 5 + i * sensorEdit_height, 33, 23,
         //    Justification::centred, true);

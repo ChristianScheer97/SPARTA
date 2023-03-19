@@ -222,7 +222,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_num_sources->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     SL_num_sources->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    SL_num_sources->setBounds (160, 94, 40, 20);
+    SL_num_sources->setBounds (160, 68, 40, 20);
 
 
     //[UserPreSize]
@@ -270,7 +270,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     sourceCoordsVP->setViewedComponent (sourceCoordsView_handle);
     sourceCoordsVP->setScrollBarsShown (true, false);
     sourceCoordsVP->setAlwaysOnTop(true);
-    sourceCoordsVP->setBounds(22, 153, 184, 180);
+    sourceCoordsVP->setBounds(22, 140, 184, 180);
     sourceCoordsView_handle->setNCH(binauraliser_getNumSources(hBin));
 
     /* file loader */
@@ -345,7 +345,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     currentWarning = k_warning_none;
 
     sourceCoordsView_handle->onEmitterButtonChange = [this](int idx) { panWindow->hideEmitter(idx); };
-    
+
     //[/Constructor]
 }
 
@@ -452,7 +452,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 12, y = 58, width = 196, height = 64;
+        int x = 12, y = 58, width = 196, height = 40;
         juce::Colour fillColour = juce::Colour (0x10f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -478,7 +478,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 12, y = 121, width = 196, height = 232;
+        int x = 12, y = 104, width = 196, height = 249;
         juce::Colour fillColour = juce::Colour (0x10f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -530,7 +530,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 23, y = 88, width = 153, height = 30;
+        int x = 24, y = 63, width = 153, height = 30;
         juce::String text (TRANS("Number of Emitters"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -822,7 +822,7 @@ void PluginEditor::paint (juce::Graphics& g)
     {
         int x = 92, y = 1, width = 164, height = 32;
         juce::String text (TRANS("roomBinauraliser"));
-        juce::Colour fillColour = juce::Colour (0xffff73f9);
+        juce::Colour fillColour = juce::Colour (0xffff3300);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
@@ -832,7 +832,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 66, y = 122, width = 108, height = 28;
+        int x = 64, y = 108, width = 108, height = 28;
         juce::String text (juce::CharPointer_UTF8 ("Azi\xc2\xb0   #   Elev\xc2\xb0"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -1218,11 +1218,11 @@ BEGIN_JUCER_METADATA
                hasStroke="1" stroke="2, mitered, butt" strokeColour="solid: ffb9b9b9"/>
     <RECT pos="712 188 196 165" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="12 58 196 64" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="12 58 196 40" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="214 58 492 246" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="12 121 196 232" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="12 104 196 249" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="446 312 260 41" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -1230,7 +1230,7 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="712 135 196 54" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="23 88 153 30" fill="solid: ffffffff" hasStroke="0" text="Number of Emitters"
+    <TEXT pos="24 63 153 30" fill="solid: ffffffff" hasStroke="0" text="Number of Emitters"
           fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="788 32 113 30" fill="solid: ffffffff" hasStroke="0" text="BRIRs"
@@ -1300,10 +1300,10 @@ BEGIN_JUCER_METADATA
     <TEXT pos="16 1 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
           fontname="Default font" fontsize="18.8" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="92 1 164 32" fill="solid: ffff73f9" hasStroke="0" text="roomBinauraliser"
+    <TEXT pos="92 1 164 32" fill="solid: ffff3300" hasStroke="0" text="roomBinauraliser"
           fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="66 122 108 28" fill="solid: ffffffff" hasStroke="0" text="Azi&#176;   #   Elev&#176;"
+    <TEXT pos="64 108 108 28" fill="solid: ffffffff" hasStroke="0" text="Azi&#176;   #   Elev&#176;"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <RECT pos="0 0 922 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
@@ -1392,7 +1392,7 @@ BEGIN_JUCER_METADATA
                 buttonText="" connectedEdges="0" needsCallback="1" radioGroupId="0"
                 state="0"/>
   <LABEL name="new slider" id="209303dce71e135c" memberName="SL_num_sources"
-         virtualName="" explicitFocusOrder="0" pos="160 94 40 20" edTextCol="ff000000"
+         virtualName="" explicitFocusOrder="0" pos="160 68 40 20" edTextCol="ff000000"
          edBkgCol="0" labelText="1&#10;" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15.0"
          kerning="0.0" bold="0" italic="0" justification="34"/>
