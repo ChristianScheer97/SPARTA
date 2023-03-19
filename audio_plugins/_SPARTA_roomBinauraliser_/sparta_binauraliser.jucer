@@ -301,17 +301,17 @@
                vst3Folder="../../../../SDKs/VST3_SDK/" userNotes="-L/usr/local/lib -lsaf_mkl_custom"
                extraLinkerFlags="-L/usr/local/lib -lsaf_mkl_custom_lp64 -lsaf_ipp_custom&#10;-Wl,-rpath,/usr/local/lib"
                extraCompilerFlags="-pedantic&#10;-W &#10;-Wall &#10;-Wextra "
-               extraDefs="SAF_USE_INTEL_MKL_LP64&#10;SAF_USE_INTEL_IPP&#10;SAF_ENABLE_SOFA_READER_MODULE"
-               xcodeValidArchs="i386,x86_64">
+               extraDefs="SAF_USE_INTEL_MKL_LP64&#10;SAF_USE_INTEL_IPP&#10;SAF_ENABLE_SOFA_READER_MODULE&#10;SAF_ENABLE_NETCDF"
+               xcodeValidArchs="i386,x86_64" externalLibraries="netcdf">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="sparta_binauraliser_debug"
-                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK&#10;/opt/intel/oneapi/mkl/latest/include&#10;/opt/intel/oneapi/ipp/latest/include"
-                       osxArchitecture="64BitIntel" osxCompatibility="10.10 SDK" enablePluginBinaryCopyStep="1"
-                       macOSDeploymentTarget="10.10"/>
+                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK&#10;/opt/intel/oneapi/mkl/latest/include&#10;/opt/intel/oneapi/ipp/latest/include&#10;/usr/local/Cellar/netcdf/4.9.1/include"
+                       osxArchitecture="64BitIntel" osxCompatibility="13.0 SDK" enablePluginBinaryCopyStep="1"
+                       macOSDeploymentTarget="13.0" libraryPath="/usr/local/Cellar/netcdf/4.9.1/bin&#10;/usr/local/Cellar/netcdf/4.9.1/lib"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="sparta_binauraliser"
-                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK&#10;/opt/intel/oneapi/mkl/latest/include&#10;/opt/intel/oneapi/ipp/latest/include"
-                       osxArchitecture="64BitIntel" osxCompatibility="10.10 SDK" enablePluginBinaryCopyStep="1"
-                       linkTimeOptimisation="0" macOSDeploymentTarget="10.10"/>
+                       binaryPath="" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK&#10;/opt/intel/oneapi/mkl/latest/include&#10;/opt/intel/oneapi/ipp/latest/include&#10;/usr/local/Cellar/netcdf/4.9.1/include"
+                       osxArchitecture="64BitIntel" osxCompatibility="13.0 SDK" enablePluginBinaryCopyStep="1"
+                       linkTimeOptimisation="0" macOSDeploymentTarget="13.0" libraryPath="/usr/local/Cellar/netcdf/4.9.1/bin&#10;/usr/local/Cellar/netcdf/4.9.1/lib"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../SDKs/JUCE/modules/"/>
