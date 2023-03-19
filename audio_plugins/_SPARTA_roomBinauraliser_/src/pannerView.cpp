@@ -158,9 +158,17 @@ void pannerView::paint (juce::Graphics& g)
     if(showInputs){
         /* Draw Source icons */
         for(int src=0; src<NSources; src++){
-            /* icon */
-            //g.setColour(Colour::fromFloatRGBA(1.0-((float)src/(float)NSources), 0.3f, ((float)src/(float)NSources), 1.0f));
-            g.setColour(Colour::fromFloatRGBA(1.0f, 0.0f, 1.0f, 0.85f));
+            if (!hiddenEmitters.contains(src)) {
+                /* icon */
+                //g.setColour(Colour::fromFloatRGBA(1.0-((float)src/(float)NSources), 0.3f, ((float)src/(float)NSources), 1.0f));
+                g.setColour(Colour::fromFloatRGBA(1.0f, 0.0f, 1.0f, 0.85f));
+                
+            }
+            else
+            {
+                g.setColour(Colour::fromFloatRGBA(0.5f, 0.5f, 0.5f, 0.15f));
+
+            }
             //setColourGradient(g, (float)src/(float)NSources);
             g.setOpacity(0.2f);
             g.fillEllipse(SourceIcons[src].expanded(8.0f,8.0f));
@@ -273,6 +281,17 @@ void pannerView::refreshPanView()
 
     repaint();
 }
+
+void pannerView::hideEmitter(int idx)
+{
+    if (hiddenEmitters.contains(idx))
+    {
+        hiddenEmitters.removeAllInstancesOf(idx);
+    }
+    else hiddenEmitters.add(idx);
+    repaint();
+}
+
 //[/MiscUserCode]
 
 

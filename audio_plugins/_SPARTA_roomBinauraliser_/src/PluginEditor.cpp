@@ -344,6 +344,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* warnings */
     currentWarning = k_warning_none;
 
+    sourceCoordsView_handle->onEmitterButtonChange = [this](int idx) { panWindow->hideEmitter(idx); };
+    
     //[/Constructor]
 }
 

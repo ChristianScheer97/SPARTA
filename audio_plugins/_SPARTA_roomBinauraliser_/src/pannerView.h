@@ -51,7 +51,8 @@ public:
     void setShowInputs(bool state){ showInputs = state; }
     void setShowOutputs(bool state){ showOutputs = state; }
     bool getSourceIconIsClicked(){ return sourceIconIsClicked; }
-
+    void hideEmitter (int idx);
+    
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
@@ -59,7 +60,6 @@ public:
     void mouseDown (const juce::MouseEvent& e) override;
     void mouseDrag (const juce::MouseEvent& e) override;
     void mouseUp (const juce::MouseEvent& e) override;
-
 
 
 private:
@@ -70,6 +70,7 @@ private:
     int height;
     bool showInputs;
     bool showOutputs;
+    juce::Array<int> hiddenEmitters;
     Rectangle<float> SourceIcons[MAX_NUM_INPUTS];
     Rectangle<float> LoudspeakerIcons[MAX_NUM_OUT_DIRS];
     int NSources;

@@ -90,7 +90,8 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
         addAndMakeVisible(emitterButtons[i].get());
         emitterButtons[i]->setBounds(75, 5 + i * sensorEdit_height, 27, 23);
         emitterButtons[i]->setClickingTogglesState(true);
-        emitterButtons[i]->setToggleState(true, true);
+        emitterButtons[i]->setToggleState(true, dontSendNotification);
+        emitterButtons[i]->onClick = [this, i](){onEmitterButtonChange(i);};
 
         //g.drawText(String(i + 1), 72, 5 + i * sensorEdit_height, 33, 23,
         //    Justification::centred, true);

@@ -57,7 +57,9 @@ public:
     }
     bool getHasASliderChanged(){ return sliderHasChanged; }
     void setHasASliderChange(bool newState){ sliderHasChanged = newState; }
+    std::function<void(int)> onEmitterButtonChange;
 
+    
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
