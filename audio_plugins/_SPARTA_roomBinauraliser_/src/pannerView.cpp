@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.4
+  Created with Projucer version: 7.0.5
 
   ------------------------------------------------------------------------------
 
@@ -164,9 +164,9 @@ void pannerView::paint (juce::Graphics& g)
                 g.setColour(Colour::fromFloatRGBA(1.0f, 0.13f, 0.0f, 1.0f));
                 //setColourGradient(g, (float)src/(float)NSources);
                 g.setOpacity(0.2f);
-                g.fillEllipse(SourceIcons[src].expanded(8.0f,8.0f));
+                g.fillEllipse(SourceIcons[src].expanded(10.0f,10.0f));
                 g.setOpacity(0.4f);
-                g.fillEllipse(SourceIcons[src].expanded(4.0f, 4.0f));
+                g.fillEllipse(SourceIcons[src].expanded(5.0f, 5.0f));
                 g.setOpacity(0.85f);
                 g.fillEllipse(SourceIcons[src]);
                 /* icon ID */
@@ -177,19 +177,14 @@ void pannerView::paint (juce::Graphics& g)
             else // hidden emitters
             {
                 g.setColour(Colour::fromFloatRGBA(0.5f, 0.5f, 0.5f, 0.15f));
-                //setColourGradient(g, (float)src/(float)NSources);
-                g.setOpacity(0.2f);
-                g.fillEllipse(SourceIcons[src].expanded(8.0f,8.0f));
-                g.setOpacity(0.4f);
-                g.fillEllipse(SourceIcons[src].expanded(4.0f, 4.0f));
-                g.setOpacity(0.85f);
-                g.fillEllipse(SourceIcons[src]);
+                g.setOpacity(0.35f);
+                g.fillEllipse(SourceIcons[src].expanded(7.0f,7.0f));
                 /* icon ID */
                 g.setColour(Colours::lightgrey);
-                g.setOpacity(0.9f);
+                g.setOpacity(1.0f);
                 g.drawText(String(src+1), SourceIcons[src].expanded(10.0f, 0.0f), Justification::centred, true); // .translated(icon_size, -icon_size)
             }
-            
+
         }
     }
 
@@ -213,7 +208,6 @@ void pannerView::resized()
 
 void pannerView::mouseDown (const juce::MouseEvent& e)
 {
-    /*
     //[UserCode_mouseDown] -- Add your code here...
     for(int i=0; i<NSources; i++){
         Rectangle<int> icon_int;
@@ -221,6 +215,7 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
                            SourceIcons[i].getY(),
                            SourceIcons[i].getWidth(),
                            SourceIcons[i].getHeight());
+        
         if(icon_int.expanded(4, 4).contains(e.getMouseDownPosition())){
             sourceIconIsClicked = true;
             indexOfClickedSource = i;
@@ -234,39 +229,18 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
         }
     }
     //[/UserCode_mouseDown]
-    */
 }
 
 void pannerView::mouseDrag (const juce::MouseEvent& e)
 {
-    /*
     //[UserCode_mouseDrag] -- Add your code here...
-    if(sourceIconIsClicked){
-        Point<float> point;
-        point.setXY((float)e.getPosition().getX()-icon_size/2.0f, (float)e.getPosition().getY()-icon_size/2.0f);
-        binauraliser_setSourceAzi_deg(hBin, indexOfClickedSource,
-                                   ((width - (point.getX() + icon_size/2.0f))*360.0f)/width-180.0f);
-        binauraliser_setSourceElev_deg(hBin, indexOfClickedSource,
-                                   ((height - (point.getY() + icon_size/2.0f))*180.0f)/height - 90.0f);
-    }
-
     //[/UserCode_mouseDrag]
-    */
 }
 
 void pannerView::mouseUp (const juce::MouseEvent& e)
 {
-    /*
     //[UserCode_mouseUp] -- Add your code here...
-    sourceIconIsClicked = false;
-    // UnSolo on ALT if not clicked on Source
-    if(!e.mods.isAltDown()){
-        binauraliser_setUnSolo(hBin);
-        soloActive = false;
-    }
-    repaint();
     //[/UserCode_mouseUp]
-    */
 }
 
 
@@ -292,13 +266,11 @@ void pannerView::refreshPanView()
     repaint();
 }
 
-void pannerView::hideEmitter(int idx)
+void pannerView::hideEmitter(int idx, bool state)
 {
-    if (hiddenEmitters.contains(idx))
-    {
-        hiddenEmitters.removeAllInstancesOf(idx);
-    }
+    if (state) hiddenEmitters.removeAllInstancesOf(idx);
     else hiddenEmitters.add(idx);
+    
     repaint();
 }
 

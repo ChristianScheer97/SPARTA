@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.3
+  Created with Projucer version: 7.0.5
 
   ------------------------------------------------------------------------------
 
@@ -57,9 +57,9 @@ public:
     }
     bool getHasASliderChanged(){ return sliderHasChanged; }
     void setHasASliderChange(bool newState){ sliderHasChanged = newState; }
-    std::function<void(int)> onEmitterButtonChange;
+    std::function<void(int, bool)> onEmitterButtonChange;
+    void toggleButton(int i) {emitterButtons[i]->triggerClick();}
 
-    
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;

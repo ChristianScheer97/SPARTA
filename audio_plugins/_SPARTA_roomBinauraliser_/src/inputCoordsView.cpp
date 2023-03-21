@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.3
+  Created with Projucer version: 7.0.5
 
   ------------------------------------------------------------------------------
 
@@ -66,7 +66,7 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
         aziSliders[i].reset (new Slider ("new slider"));
         addAndMakeVisible (aziSliders[i].get());
         aziSliders[i]->setRange (-360.0, 360.0, 0.001);
-        aziSliders[i]->setNumDecimalPlacesToDisplay(1);
+        aziSliders[i]->setNumDecimalPlacesToDisplay(2);
         aziSliders[i]->setValue(binauraliser_getSourceAzi_deg(hBin, i));
         aziSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         aziSliders[i]->setTextBoxStyle (Slider::TextBoxRight, false, 70, 20);
@@ -76,12 +76,12 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
         aziSliders[i]->setValue(-90, juce::sendNotificationSync); // just for debugging
         aziSliders[i]->setColour(juce::Slider::textBoxTextColourId, Colours::red);
         aziSliders[i]->setColour(juce::Slider::textBoxOutlineColourId, Colours::darkred);
-        
+
         /* create and initialise elevation sliders */
         elevSliders[i].reset (new Slider ("new slider"));
         addAndMakeVisible (elevSliders[i].get());
         elevSliders[i]->setRange (-180.0, 180.0, 0.001);
-        elevSliders[i]->setNumDecimalPlacesToDisplay(1);
+        elevSliders[i]->setNumDecimalPlacesToDisplay(2);
         elevSliders[i]->setValue(binauraliser_getSourceElev_deg(hBin, i));
         elevSliders[i]->setSliderStyle (Slider::LinearHorizontal);
         elevSliders[i]->setTextBoxStyle (Slider::TextBoxLeft, false, 70, 20);
@@ -94,22 +94,27 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
         /* create and initialise emitter number button */
         emitterButtons[i].reset(new TextButton(String(i+1), "Enable/Disable emitter."));
         addAndMakeVisible(emitterButtons[i].get());
-        emitterButtons[i]->setBounds(75, 5 + i * sensorEdit_height, 27, 23);
+        emitterButtons[i]->setBounds(76, 4 + i * sensorEdit_height, 24, 24);
         emitterButtons[i]->setClickingTogglesState(true);
         emitterButtons[i]->setToggleState(true, dontSendNotification);
         emitterButtons[i]->setColour(juce::TextButton::buttonOnColourId, Colours::darkred);
+        emitterButtons[i]->setColour(juce::TextButton::buttonColourId, Colours::grey.darker(0.7f));
         emitterButtons[i]->onClick = [this, i]()
         {
-            onEmitterButtonChange(i);
-            if (elevSliders[i]->findColour(juce::Slider::textBoxTextColourId) == Colours::red)
-            {
-                elevSliders[i]->setColour(juce::Slider::textBoxTextColourId, Colours::grey);
-                aziSliders[i]->setColour(juce::Slider::textBoxTextColourId, Colours::grey);
-            }
-            else
+            onEmitterButtonChange(i, emitterButtons[i]->getToggleState());
+            if (emitterButtons[i]->getToggleState())
             {
                 elevSliders[i]->setColour(juce::Slider::textBoxTextColourId, Colours::red);
                 aziSliders[i]->setColour(juce::Slider::textBoxTextColourId, Colours::red);
+                elevSliders[i]->setColour(juce::Slider::textBoxOutlineColourId, Colours::darkred);
+                aziSliders[i]->setColour(juce::Slider::textBoxOutlineColourId, Colours::darkred);
+            }
+            else
+            {
+                elevSliders[i]->setColour(juce::Slider::textBoxTextColourId, Colours::grey);
+                aziSliders[i]->setColour(juce::Slider::textBoxTextColourId, Colours::grey);
+                elevSliders[i]->setColour(juce::Slider::textBoxOutlineColourId, Colours::grey.darker(0.7f));
+                aziSliders[i]->setColour(juce::Slider::textBoxOutlineColourId, Colours::grey.darker(0.7f));
             }
         };
 

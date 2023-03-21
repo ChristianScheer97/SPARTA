@@ -344,7 +344,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* warnings */
     currentWarning = k_warning_none;
 
-    sourceCoordsView_handle->onEmitterButtonChange = [this](int idx) { panWindow->hideEmitter(idx); };
+    sourceCoordsView_handle->onEmitterButtonChange = [this](int idx, bool state) { panWindow->hideEmitter(idx, state); };
 
     //[/Constructor]
 }
@@ -809,7 +809,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 16, y = 1, width = 100, height = 32;
-        juce::String text (TRANS("SPARTA|"));
+        juce::String text (TRANS("SPARTA |"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -820,7 +820,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 92, y = 1, width = 164, height = 32;
+        int x = 97, y = 1, width = 164, height = 32;
         juce::String text (TRANS("roomBinauraliser"));
         juce::Colour fillColour = juce::Colour (0xffff3300);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -1150,11 +1150,16 @@ void PluginEditor::timerCallback(int timerID)
             }
 
             /* refresh pan view */
-            if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked()) || sourceCoordsView_handle->getHasASliderChanged() || hVst->getRefreshWindow()){
+            if((refreshPanViewWindow == true) || (panWindow->getSourceIconIsClicked().first) || sourceCoordsView_handle->getHasASliderChanged() || hVst->getRefreshWindow()){
                 panWindow->refreshPanView();
                 sourceCoordsView_handle->setHasASliderChange(false);
                 refreshPanViewWindow = false;
                 hVst->setRefreshWindow(false);
+            }
+
+            if (panWindow->getSourceIconIsClicked().first) {
+                sourceCoordsView_handle->toggleButton(panWindow->getSourceIconIsClicked().second);
+                panWindow->setSourceIconIsClicked();
             }
 
             /* display warning message, if needed */
@@ -1297,10 +1302,10 @@ BEGIN_JUCER_METADATA
     <TEXT pos="721 187 160 30" fill="solid: ffffffff" hasStroke="0" text="Enable Rotation:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="16 1 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
+    <TEXT pos="16 1 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA |"
           fontname="Default font" fontsize="18.8" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="92 1 164 32" fill="solid: ffff3300" hasStroke="0" text="roomBinauraliser"
+    <TEXT pos="97 1 164 32" fill="solid: ffff3300" hasStroke="0" text="roomBinauraliser"
           fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="64 108 108 28" fill="solid: ffffffff" hasStroke="0" text="Azi&#176;   #   Elev&#176;"

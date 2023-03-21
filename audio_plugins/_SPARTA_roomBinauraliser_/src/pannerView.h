@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 6.0.4
+  Created with Projucer version: 7.0.5
 
   ------------------------------------------------------------------------------
 
@@ -50,9 +50,10 @@ public:
     void refreshPanView();
     void setShowInputs(bool state){ showInputs = state; }
     void setShowOutputs(bool state){ showOutputs = state; }
-    bool getSourceIconIsClicked(){ return sourceIconIsClicked; }
-    void hideEmitter (int idx);
-    
+    std::pair<bool, int> getSourceIconIsClicked(){ return std::make_tuple(sourceIconIsClicked, indexOfClickedSource); }
+    void setSourceIconIsClicked() {sourceIconIsClicked = false;}
+    void hideEmitter (int idx, bool state);
+
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
@@ -60,6 +61,7 @@ public:
     void mouseDown (const juce::MouseEvent& e) override;
     void mouseDrag (const juce::MouseEvent& e) override;
     void mouseUp (const juce::MouseEvent& e) override;
+
 
 
 private:
