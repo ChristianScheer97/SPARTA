@@ -52,15 +52,14 @@ public:
     void setShowOutputs(bool state){ showOutputs = state; }
     std::pair<bool, int> getSourceIconIsClicked(){ return std::make_tuple(sourceIconIsClicked, indexOfClickedSource); }
     void setSourceIconIsClicked() {sourceIconIsClicked = false;}
-    void hideEmitter (int idx, bool state);
+    void hideEmitter (int idx, bool isActive);
+    bool getSoloActive(){return soloActive;};
 
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
     void resized() override;
     void mouseDown (const juce::MouseEvent& e) override;
-    void mouseDrag (const juce::MouseEvent& e) override;
-    void mouseUp (const juce::MouseEvent& e) override;
 
 
 

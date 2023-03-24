@@ -49,16 +49,16 @@ pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
     height = _height;
 
     for(int src=0; src<MAX_NUM_INPUTS; src++){
-        SourceIcons[src].setBounds(width - width*(binauraliser_getSourceAzi_deg(hBin, src) + 180.0f)/360.f - icon_size/2.0f,
-                                   height - height*(binauraliser_getSourceElev_deg(hBin, src) + 90.0f)/180.0f - icon_size/2.0f,
+        SourceIcons[src].setBounds(width - width*(roombinauraliser_getSourceAzi_deg(hBin, src) + 180.0f)/360.f - icon_size/2.0f,
+                                   height - height*(roombinauraliser_getSourceElev_deg(hBin, src) + 90.0f)/180.0f - icon_size/2.0f,
                                    icon_size,
                                    icon_size);
     }
-    NSources = binauraliser_getNumSources(hBin);
-    NLoudspeakers = binauraliser_getNDirs(hBin)>MAX_NUM_OUT_DIRS? MAX_NUM_OUT_DIRS : binauraliser_getNDirs(hBin);
+    NSources = roombinauraliser_getNumSources(hBin);
+    NLoudspeakers = roombinauraliser_getNDirs(hBin)>MAX_NUM_OUT_DIRS? MAX_NUM_OUT_DIRS : roombinauraliser_getNDirs(hBin);
     for(int ls=0; ls<NLoudspeakers; ls++){
-        LoudspeakerIcons[ls].setBounds(width - width*(binauraliser_getHRIRAzi_deg(hBin, ls) + 180.0f)/360.f - icon_size/2.0f,
-                                       height - height*(binauraliser_getHRIRElev_deg(hBin, ls)+90.0f)/180.0f - icon_size/2.0f,
+        LoudspeakerIcons[ls].setBounds(width - width*(roombinauraliser_getHRIRAzi_deg(hBin, ls) + 180.0f)/360.f - icon_size/2.0f,
+                                       height - height*(roombinauraliser_getHRIRElev_deg(hBin, ls)+90.0f)/180.0f - icon_size/2.0f,
                                        icon_size,
                                        icon_size);
     }
@@ -190,7 +190,7 @@ void pannerView::paint (juce::Graphics& g)
 
     /* Draw SOLO ACTIVE */
     if(soloActive){
-        g.setColour(Colours::red);
+        g.setColour(Colours::red.brighter(0.2f));
         g.drawSingleLineText("SoloActive", 5, 15);
     }
 
@@ -215,32 +215,23 @@ void pannerView::mouseDown (const juce::MouseEvent& e)
                            SourceIcons[i].getY(),
                            SourceIcons[i].getWidth(),
                            SourceIcons[i].getHeight());
-        
-        if(icon_int.expanded(4, 4).contains(e.getMouseDownPosition())){
+
+        if(icon_int.expanded(6, 6).contains(e.getMouseDownPosition())){
             sourceIconIsClicked = true;
             indexOfClickedSource = i;
 
             // Solo on ALT
             if(e.mods.isAltDown()){
-                binauraliser_setSourceSolo(hBin, i);
-                soloActive = true;
+                if (!soloActive)
+                    roombinauraliser_setSourceSolo(hBin, i);
+                else
+                    roombinauraliser_setUnSolo(hBin);
+                soloActive = !soloActive;
             }
             break;
         }
     }
     //[/UserCode_mouseDown]
-}
-
-void pannerView::mouseDrag (const juce::MouseEvent& e)
-{
-    //[UserCode_mouseDrag] -- Add your code here...
-    //[/UserCode_mouseDrag]
-}
-
-void pannerView::mouseUp (const juce::MouseEvent& e)
-{
-    //[UserCode_mouseUp] -- Add your code here...
-    //[/UserCode_mouseUp]
 }
 
 
@@ -249,16 +240,16 @@ void pannerView::mouseUp (const juce::MouseEvent& e)
 void pannerView::refreshPanView()
 {
     for(int src=0; src<MAX_NUM_INPUTS; src++){
-        SourceIcons[src].setBounds(width - width*(binauraliser_getSourceAzi_deg(hBin, src) + 180.0f)/360.f - icon_size/2.0f,
-                                   height - height*(binauraliser_getSourceElev_deg(hBin, src) + 90.0f)/180.0f - icon_size/2.0f,
+        SourceIcons[src].setBounds(width - width*(roombinauraliser_getSourceAzi_deg(hBin, src) + 180.0f)/360.f - icon_size/2.0f,
+                                   height - height*(roombinauraliser_getSourceElev_deg(hBin, src) + 90.0f)/180.0f - icon_size/2.0f,
                                    icon_size,
                                    icon_size);
     }
-    NSources = binauraliser_getNumSources(hBin);
-    NLoudspeakers = binauraliser_getNDirs(hBin)>MAX_NUM_OUT_DIRS ? MAX_NUM_OUT_DIRS : binauraliser_getNDirs(hBin);
+    NSources = roombinauraliser_getNumSources(hBin);
+    NLoudspeakers = roombinauraliser_getNDirs(hBin)>MAX_NUM_OUT_DIRS ? MAX_NUM_OUT_DIRS : roombinauraliser_getNDirs(hBin);
     for(int ls=0; ls<NLoudspeakers; ls++){
-        LoudspeakerIcons[ls].setBounds(width - width*(binauraliser_getHRIRAzi_deg(hBin, ls) + 180.0f)/360.f - icon_size/2.0f,
-                                       height - height*(binauraliser_getHRIRElev_deg(hBin, ls) + 90.0f)/180.0f - icon_size/2.0f,
+        LoudspeakerIcons[ls].setBounds(width - width*(roombinauraliser_getHRIRAzi_deg(hBin, ls) + 180.0f)/360.f - icon_size/2.0f,
+                                       height - height*(roombinauraliser_getHRIRElev_deg(hBin, ls) + 90.0f)/180.0f - icon_size/2.0f,
                                        icon_size,
                                        icon_size);
     }
@@ -266,11 +257,17 @@ void pannerView::refreshPanView()
     repaint();
 }
 
-void pannerView::hideEmitter(int idx, bool state)
+void pannerView::hideEmitter(int idx, bool isActive)
 {
-    if (state) hiddenEmitters.removeAllInstancesOf(idx);
+    if (isActive) hiddenEmitters.removeAllInstancesOf(idx);
     else hiddenEmitters.add(idx);
-    
+    for (int i=0; i<roombinauraliser_getNumSources(hBin); i++)
+    {
+        if (hiddenEmitters.contains(i))
+            roombinauraliser_muteSource(hBin, i, true);
+            else
+            roombinauraliser_muteSource(hBin, i, false);
+    }
     repaint();
 }
 
@@ -292,8 +289,6 @@ BEGIN_JUCER_METADATA
                  overlayOpacity="0.330" fixedSize="1" initialWidth="492" initialHeight="246">
   <METHODS>
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseDrag (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseUp (const MouseEvent&amp; e)"/>
   </METHODS>
   <BACKGROUND backgroundColour="323e44">
     <RECT pos="0 0 492 246" fill="linear: 248 0, 248 248, 0=ff4e4e4e, 1=ff202020"

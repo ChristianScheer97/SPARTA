@@ -266,38 +266,38 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* source coordinate viewport */
     sourceCoordsVP.reset (new Viewport ("new viewport"));
     addAndMakeVisible (sourceCoordsVP.get());
-    sourceCoordsView_handle = new inputCoordsView(ownerFilter, MAX_NUM_INPUTS, binauraliser_getNumSources(hBin));
+    sourceCoordsView_handle = new inputCoordsView(ownerFilter, MAX_NUM_INPUTS, roombinauraliser_getNumSources(hBin));
     sourceCoordsVP->setViewedComponent (sourceCoordsView_handle);
     sourceCoordsVP->setScrollBarsShown (true, false);
     sourceCoordsVP->setAlwaysOnTop(true);
     sourceCoordsVP->setBounds(22, 140, 184, 180);
-    sourceCoordsView_handle->setNCH(binauraliser_getNumSources(hBin));
+    sourceCoordsView_handle->setNCH(roombinauraliser_getNumSources(hBin));
 
     /* file loader */
     addAndMakeVisible (fileChooser);
     fileChooser.addListener (this);
     fileChooser.setBounds (718, 89, 180, 20);
     StringArray filenames;
-    filenames.add(binauraliser_getSofaFilePath(hBin));
+    filenames.add(roombinauraliser_getSofaFilePath(hBin));
     fileChooser.setRecentlyUsedFilenames(filenames);
     fileChooser.setFilenameIsEditable(true);
 
     /* grab current parameter settings */
-    TBuseDefaultHRIRs->setToggleState(binauraliser_getUseDefaultHRIRsflag(hBin), dontSendNotification);
-    SL_num_sources->setText(juce::String(binauraliser_getNumSources(hBin)), juce::dontSendNotification);
-/*SL_num_sources->setValue(binauraliser_getNumSources(hBin),dontSendNotification); */
+    TBuseDefaultHRIRs->setToggleState(roombinauraliser_getUseDefaultHRIRsflag(hBin), dontSendNotification);
+    SL_num_sources->setText(juce::String(roombinauraliser_getNumSources(hBin)), juce::dontSendNotification);
+/*SL_num_sources->setValue(roombinauraliser_getNumSources(hBin),dontSendNotification); */
     TB_showInputs->setToggleState(true, dontSendNotification);
     TB_showOutputs->setToggleState(false, dontSendNotification);
-    CBinterpMode->setSelectedId(binauraliser_getInterpMode(hBin), dontSendNotification);
-    TBenableRotation->setToggleState((bool)binauraliser_getEnableRotation(hBin), dontSendNotification);
-    s_yaw->setValue(binauraliser_getYaw(hBin), dontSendNotification);
-    s_pitch->setValue(binauraliser_getPitch(hBin), dontSendNotification);
-    s_roll->setValue(binauraliser_getRoll(hBin), dontSendNotification);
-    t_flipYaw->setToggleState((bool)binauraliser_getFlipYaw(hBin), dontSendNotification);
-    t_flipPitch->setToggleState((bool)binauraliser_getFlipPitch(hBin), dontSendNotification);
-    t_flipRoll->setToggleState((bool)binauraliser_getFlipRoll(hBin), dontSendNotification);
+    CBinterpMode->setSelectedId(roombinauraliser_getInterpMode(hBin), dontSendNotification);
+    TBenableRotation->setToggleState((bool)roombinauraliser_getEnableRotation(hBin), dontSendNotification);
+    s_yaw->setValue(roombinauraliser_getYaw(hBin), dontSendNotification);
+    s_pitch->setValue(roombinauraliser_getPitch(hBin), dontSendNotification);
+    s_roll->setValue(roombinauraliser_getRoll(hBin), dontSendNotification);
+    t_flipYaw->setToggleState((bool)roombinauraliser_getFlipYaw(hBin), dontSendNotification);
+    t_flipPitch->setToggleState((bool)roombinauraliser_getFlipPitch(hBin), dontSendNotification);
+    t_flipRoll->setToggleState((bool)roombinauraliser_getFlipRoll(hBin), dontSendNotification);
     te_oscport->setText(String(hVst->getOscPortID()), dontSendNotification);
-    TBrpyFlag->setToggleState((bool)binauraliser_getRPYflag(hBin), dontSendNotification);
+    TBrpyFlag->setToggleState((bool)roombinauraliser_getRPYflag(hBin), dontSendNotification);
 
     /* create panning window */
     panWindow.reset (new pannerView(ownerFilter, 492, 246));
@@ -344,7 +344,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* warnings */
     currentWarning = k_warning_none;
 
-    sourceCoordsView_handle->onEmitterButtonChange = [this](int idx, bool state) { panWindow->hideEmitter(idx, state); };
+    sourceCoordsView_handle->onEmitterButtonChange = [this](int idx, bool isActive)
+    {
+        panWindow->hideEmitter(idx, isActive);        
+    };
 
     //[/Constructor]
 }
@@ -910,12 +913,12 @@ void PluginEditor::paint (juce::Graphics& g)
         case k_warning_none:
             break;
         case k_warning_frameSize:
-            g.drawText(TRANS("Set frame size to multiple of ") + String(binauraliser_getFrameSize()),
+            g.drawText(TRANS("Set frame size to multiple of ") + String(roombinauraliser_getFrameSize()),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_supported_fs:
-            g.drawText(TRANS("Sample rate (") + String(binauraliser_getDAWsamplerate(hBin)) + TRANS(") is unsupported"),
+            g.drawText(TRANS("Sample rate (") + String(roombinauraliser_getDAWsamplerate(hBin)) + TRANS(") is unsupported"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -926,13 +929,13 @@ void PluginEditor::paint (juce::Graphics& g)
             break;
         case k_warning_NinputCH:
             g.drawText(TRANS("Insufficient number of input channels (") + String(hVst->getTotalNumInputChannels()) +
-                       TRANS("/") + String(binauraliser_getNumSources(hBin)) + TRANS(")"),
+                       TRANS("/") + String(roombinauraliser_getNumSources(hBin)) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
         case k_warning_NoutputCH:
             g.drawText(TRANS("Insufficient number of output channels (") + String(hVst->getTotalNumOutputChannels()) +
-                       TRANS("/") + String(binauraliser_getNumEars()) + TRANS(")"),
+                       TRANS("/") + String(roombinauraliser_getNumEars()) + TRANS(")"),
                        getBounds().getWidth()-225, 16, 530, 11,
                        Justification::centredLeft, true);
             break;
@@ -964,7 +967,7 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     if (buttonThatWasClicked == TBuseDefaultHRIRs.get())
     {
         //[UserButtonCode_TBuseDefaultHRIRs] -- add your button handler code here..
-        binauraliser_setUseDefaultHRIRsflag(hBin, (int)TBuseDefaultHRIRs->getToggleState());
+        roombinauraliser_setUseDefaultHRIRsflag(hBin, (int)TBuseDefaultHRIRs->getToggleState());
         refreshPanViewWindow = true;
         //[/UserButtonCode_TBuseDefaultHRIRs]
     }
@@ -985,37 +988,37 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == t_flipYaw.get())
     {
         //[UserButtonCode_t_flipYaw] -- add your button handler code here..
-        binauraliser_setFlipYaw(hBin, (int)t_flipYaw->getToggleState());
+        roombinauraliser_setFlipYaw(hBin, (int)t_flipYaw->getToggleState());
         //[/UserButtonCode_t_flipYaw]
     }
     else if (buttonThatWasClicked == t_flipPitch.get())
     {
         //[UserButtonCode_t_flipPitch] -- add your button handler code here..
-        binauraliser_setFlipPitch(hBin, (int)t_flipPitch->getToggleState());
+        roombinauraliser_setFlipPitch(hBin, (int)t_flipPitch->getToggleState());
         //[/UserButtonCode_t_flipPitch]
     }
     else if (buttonThatWasClicked == t_flipRoll.get())
     {
         //[UserButtonCode_t_flipRoll] -- add your button handler code here..
-        binauraliser_setFlipRoll(hBin, (int)t_flipRoll->getToggleState());
+        roombinauraliser_setFlipRoll(hBin, (int)t_flipRoll->getToggleState());
         //[/UserButtonCode_t_flipRoll]
     }
     else if (buttonThatWasClicked == TBrpyFlag.get())
     {
         //[UserButtonCode_TBrpyFlag] -- add your button handler code here..
-        binauraliser_setRPYflag(hBin, (int)TBrpyFlag->getToggleState());
+        roombinauraliser_setRPYflag(hBin, (int)TBrpyFlag->getToggleState());
         //[/UserButtonCode_TBrpyFlag]
     }
     else if (buttonThatWasClicked == TBenableRotation.get())
     {
         //[UserButtonCode_TBenableRotation] -- add your button handler code here..
-        binauraliser_setEnableRotation(hBin, (int)TBenableRotation->getToggleState());
+        roombinauraliser_setEnableRotation(hBin, (int)TBenableRotation->getToggleState());
         //[/UserButtonCode_TBenableRotation]
     }
     else if (buttonThatWasClicked == TBenablePreProc.get())
     {
         //[UserButtonCode_TBenablePreProc] -- add your button handler code here..
-        binauraliser_setEnableHRIRsDiffuseEQ(hBin, (int)TBenablePreProc->getToggleState());
+        roombinauraliser_setEnableHRIRsDiffuseEQ(hBin, (int)TBenablePreProc->getToggleState());
         //[/UserButtonCode_TBenablePreProc]
     }
 
@@ -1031,7 +1034,7 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == CBinterpMode.get())
     {
         //[UserComboBoxCode_CBinterpMode] -- add your combo box handling code here..
-        binauraliser_setInterpMode(hBin, CBinterpMode->getSelectedId());
+        roombinauraliser_setInterpMode(hBin, CBinterpMode->getSelectedId());
         //[/UserComboBoxCode_CBinterpMode]
     }
 
@@ -1047,19 +1050,19 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == s_yaw.get())
     {
         //[UserSliderCode_s_yaw] -- add your slider handling code here..
-        binauraliser_setYaw(hBin, (float)s_yaw->getValue());
+        roombinauraliser_setYaw(hBin, (float)s_yaw->getValue());
         //[/UserSliderCode_s_yaw]
     }
     else if (sliderThatWasMoved == s_pitch.get())
     {
         //[UserSliderCode_s_pitch] -- add your slider handling code here..
-        binauraliser_setPitch(hBin, (float)s_pitch->getValue());
+        roombinauraliser_setPitch(hBin, (float)s_pitch->getValue());
         //[/UserSliderCode_s_pitch]
     }
     else if (sliderThatWasMoved == s_roll.get())
     {
         //[UserSliderCode_s_roll] -- add your slider handling code here..
-        binauraliser_setRoll(hBin, (float)s_roll->getValue());
+        roombinauraliser_setRoll(hBin, (float)s_roll->getValue());
         //[/UserSliderCode_s_roll]
     }
 
@@ -1080,39 +1083,39 @@ void PluginEditor::timerCallback(int timerID)
         case TIMER_GUI_RELATED:
 
             /* labels for HRIR details */
-            label_N_dirs->setText(String(binauraliser_getNDirs(hBin)), dontSendNotification);
-            label_HRIR_fs->setText(String(binauraliser_getHRIRsamplerate(hBin)), dontSendNotification);
-            label_DAW_fs->setText(String(binauraliser_getDAWsamplerate(hBin)), dontSendNotification);
-            label_N_Tri->setText(String(binauraliser_getNTriangles(hBin)), dontSendNotification);
+            label_N_dirs->setText(String(roombinauraliser_getNDirs(hBin)), dontSendNotification);
+            label_HRIR_fs->setText(String(roombinauraliser_getHRIRsamplerate(hBin)), dontSendNotification);
+            label_DAW_fs->setText(String(roombinauraliser_getDAWsamplerate(hBin)), dontSendNotification);
+            label_N_Tri->setText(String(roombinauraliser_getNTriangles(hBin)), dontSendNotification);
 
             /* parameters whos values can change internally should be periodically refreshed */
-            sourceCoordsView_handle->setNCH(binauraliser_getNumSources(hBin));
-            if(binauraliser_getUseDefaultHRIRsflag(hBin)!=TBuseDefaultHRIRs->getToggleState())
-                TBuseDefaultHRIRs->setToggleState(binauraliser_getUseDefaultHRIRsflag(hBin), dontSendNotification);
-            if(binauraliser_getEnableHRIRsDiffuseEQ(hBin)!=TBenablePreProc->getToggleState())
-                TBenablePreProc->setToggleState(binauraliser_getEnableHRIRsDiffuseEQ(hBin), dontSendNotification);
-            if(binauraliser_getNumSources(hBin)!=SL_num_sources->getText().getIntValue())
-                SL_num_sources->setText(juce::String(binauraliser_getNumSources(hBin)),dontSendNotification);
-            if(binauraliser_getYaw(hBin)!=s_yaw->getValue())
-                s_yaw->setValue(binauraliser_getYaw(hBin), dontSendNotification);
-            if(binauraliser_getPitch(hBin)!=s_pitch->getValue())
-                s_pitch->setValue(binauraliser_getPitch(hBin), dontSendNotification);
-            if(binauraliser_getRoll(hBin)!=s_roll->getValue())
-                s_roll->setValue(binauraliser_getRoll(hBin), dontSendNotification);
+            sourceCoordsView_handle->setNCH(roombinauraliser_getNumSources(hBin));
+            if(roombinauraliser_getUseDefaultHRIRsflag(hBin)!=TBuseDefaultHRIRs->getToggleState())
+                TBuseDefaultHRIRs->setToggleState(roombinauraliser_getUseDefaultHRIRsflag(hBin), dontSendNotification);
+            if(roombinauraliser_getEnableHRIRsDiffuseEQ(hBin)!=TBenablePreProc->getToggleState())
+                TBenablePreProc->setToggleState(roombinauraliser_getEnableHRIRsDiffuseEQ(hBin), dontSendNotification);
+            if(roombinauraliser_getNumSources(hBin)!=SL_num_sources->getText().getIntValue())
+                SL_num_sources->setText(juce::String(roombinauraliser_getNumSources(hBin)),dontSendNotification);
+            if(roombinauraliser_getYaw(hBin)!=s_yaw->getValue())
+                s_yaw->setValue(roombinauraliser_getYaw(hBin), dontSendNotification);
+            if(roombinauraliser_getPitch(hBin)!=s_pitch->getValue())
+                s_pitch->setValue(roombinauraliser_getPitch(hBin), dontSendNotification);
+            if(roombinauraliser_getRoll(hBin)!=s_roll->getValue())
+                s_roll->setValue(roombinauraliser_getRoll(hBin), dontSendNotification);
 
             /* Progress bar */
-            if(binauraliser_getCodecStatus(hBin)==CODEC_STATUS_INITIALISING){
+            if(roombinauraliser_getCodecStatus(hBin)==CODEC_STATUS_INITIALISING){
                 addAndMakeVisible(progressbar);
-                progress = (double)binauraliser_getProgressBar0_1(hBin);
+                progress = (double)roombinauraliser_getProgressBar0_1(hBin);
                 char text[PROGRESSBARTEXT_CHAR_LENGTH];
-                binauraliser_getProgressBarText(hBin, (char*)text);
+                roombinauraliser_getProgressBarText(hBin, (char*)text);
                 progressbar.setTextToDisplay(String(text));
             }
             else
                 removeChildComponent(&progressbar);
 
             /* disable certain parameters if currently initialising */
-            if(binauraliser_getCodecStatus(hBin)==CODEC_STATUS_INITIALISING){
+            if(roombinauraliser_getCodecStatus(hBin)==CODEC_STATUS_INITIALISING){
                 /*if(CBsourceDirsPreset->isEnabled())
                    CBsourceDirsPreset->setEnabled(false); */
                 if(SL_num_sources->isEnabled())
@@ -1158,32 +1161,41 @@ void PluginEditor::timerCallback(int timerID)
             }
 
             if (panWindow->getSourceIconIsClicked().first) {
-                sourceCoordsView_handle->toggleButton(panWindow->getSourceIconIsClicked().second);
                 panWindow->setSourceIconIsClicked();
+                if (!panWindow->getSoloActive())
+                    sourceCoordsView_handle->toggleEmitterButton(panWindow->getSourceIconIsClicked().second);
+                else
+                {
+                    for (int i=0; i<roombinauraliser_getNumSources(hBin); i++)
+                        if (i != panWindow->getSourceIconIsClicked().second)
+                            sourceCoordsView_handle->toggleEmitterButton(i, true, false);
+                        else
+                            sourceCoordsView_handle->toggleEmitterButton(i, true, true);
+                }
             }
 
             /* display warning message, if needed */
-            if ((hVst->getCurrentBlockSize() % binauraliser_getFrameSize()) != 0){
+            if ((hVst->getCurrentBlockSize() % roombinauraliser_getFrameSize()) != 0){
                 currentWarning = k_warning_frameSize;
                 repaint(0,0,getWidth(),32);
             }
-            else if ( !((binauraliser_getDAWsamplerate(hBin) == 44.1e3) || (binauraliser_getDAWsamplerate(hBin) == 48e3)) ){
+            else if ( !((roombinauraliser_getDAWsamplerate(hBin) == 44.1e3) || (roombinauraliser_getDAWsamplerate(hBin) == 48e3)) ){
                 currentWarning = k_warning_supported_fs;
                 repaint(0,0,getWidth(),32);
             }
-            else if (binauraliser_getDAWsamplerate(hBin) != binauraliser_getHRIRsamplerate(hBin)){
+            else if (roombinauraliser_getDAWsamplerate(hBin) != roombinauraliser_getHRIRsamplerate(hBin)){
                 currentWarning = k_warning_mismatch_fs;
                 repaint(0,0,getWidth(),32);
             }
-            else if ((hVst->getCurrentNumInputs() < binauraliser_getNumSources(hBin))){
+            else if ((hVst->getCurrentNumInputs() < roombinauraliser_getNumSources(hBin))){
                 currentWarning = k_warning_NinputCH;
                 repaint(0,0,getWidth(),32);
             }
-            else if ((hVst->getCurrentNumOutputs() < binauraliser_getNumEars())){
+            else if ((hVst->getCurrentNumOutputs() < roombinauraliser_getNumEars())){
                 currentWarning = k_warning_NoutputCH;
                 repaint(0,0,getWidth(),32);
             }
-            else if(!hVst->getOscPortConnected() && binauraliser_getEnableRotation(hBin)){
+            else if(!hVst->getOscPortConnected() && roombinauraliser_getEnableRotation(hBin)){
                 currentWarning = k_warning_osc_connection_fail;
                 repaint(0,0,getWidth(),32);
             }
@@ -1305,7 +1317,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="16 1 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA |"
           fontname="Default font" fontsize="18.8" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="97 1 164 32" fill="solid: ffff3300" hasStroke="0" text="roomBinauraliser"
+    <TEXT pos="97 1 164 32" fill="solid: ffff3300" hasStroke="0" text="roombinauraliser"
           fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="64 108 108 28" fill="solid: ffffffff" hasStroke="0" text="Azi&#176;   #   Elev&#176;"

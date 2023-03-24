@@ -102,7 +102,7 @@ private:
     void filenameComponentChanged (FilenameComponent*) override  {
         String directory = fileChooser.getCurrentFile().getFullPathName();
         const char* new_cstring = (const char*)directory.toUTF8();
-        binauraliser_setSofaFilePath(hBin, new_cstring);
+        roombinauraliser_setSofaFilePath(hBin, new_cstring);
         refreshPanViewWindow = true;
     }
 

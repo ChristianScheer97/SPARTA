@@ -23,7 +23,7 @@
 #define PLUGINPROCESSOR_H_INCLUDED
 
 #include <JuceHeader.h>
-#include "binauraliser.h"
+#include "roombinauraliser.h"
 #include <thread>
 #define CONFIGURATIONHELPER_ENABLE_GENERICLAYOUT_METHODS 1
 #include "../../resources/ConfigurationHelper.h"
@@ -100,7 +100,7 @@ public:
     bool getOscPortConnected(){ return osc_connected; }
     
 private:
-    void* hBin;           /* binauraliser handle */
+    void* hBin;           /* roombinauraliser handle */
     int nNumInputs;       /* current number of input channels */
     int nNumOutputs;      /* current number of output channels */
     int nSampleRate;      /* current host sample rate */
@@ -116,9 +116,9 @@ private:
         switch(timerID){
             case TIMER_PROCESSING_RELATED:
                 /* reinitialise codec if needed */
-                if(binauraliser_getCodecStatus(hBin) == CODEC_STATUS_NOT_INITIALISED){
+                if(roombinauraliser_getCodecStatus(hBin) == CODEC_STATUS_NOT_INITIALISED){
                     try{
-                        std::thread threadInit(binauraliser_initCodec, hBin);
+                        std::thread threadInit(roombinauraliser_initCodec, hBin);
                         threadInit.detach();
                     } catch (const std::exception& exception) {
                         std::cout << "Could not create thread" << exception.what() << std::endl;

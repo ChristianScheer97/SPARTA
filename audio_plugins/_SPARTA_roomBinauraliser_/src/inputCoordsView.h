@@ -58,7 +58,7 @@ public:
     bool getHasASliderChanged(){ return sliderHasChanged; }
     void setHasASliderChange(bool newState){ sliderHasChanged = newState; }
     std::function<void(int, bool)> onEmitterButtonChange;
-    void toggleButton(int i) {emitterButtons[i]->triggerClick();}
+    void toggleEmitterButton(int i, bool forceSwitch = false, bool toggleOn = false);
 
     //[/UserMethods]
 
