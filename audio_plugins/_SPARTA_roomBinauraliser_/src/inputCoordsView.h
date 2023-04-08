@@ -64,6 +64,7 @@ public:
     void resized() override;
     void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
 
+    std::function<void(int)> onEmitterButtonChange;
 
 
 private:

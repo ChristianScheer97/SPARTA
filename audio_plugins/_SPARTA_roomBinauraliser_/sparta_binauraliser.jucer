@@ -15,7 +15,7 @@
               reportAppUsage="0" splashScreenColour="Dark" buildStandalone="1"
               enableIAA="0" cppLanguageStandard="17" companyCopyright="Aalto"
               pluginFormats="buildStandalone,buildVST" jucerFormatVersion="1"
-              headerPath="C:\Program Files\netCDF 4.9.1\include">
+              headerPath="C:\Program Files\netCDF 4.9.2\include">
   <MAINGROUP id="imnfnp" name="sparta_roomBinauraliser">
     <FILE id="UwaAVc" name="ConfigurationHelper.h" compile="0" resource="0"
           file="../resources/ConfigurationHelper.h"/>
@@ -389,8 +389,8 @@
         <CONFIGURATION isDebug="1" name="Debug" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/Intel/oneAPI/mkl/latest/include&#10;C:/Program Files (x86)/Intel/oneAPI/ipp/latest/include&#10;C:\Program Files\netCDF 4.9.2\include"
                        libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib&#10;C:\Program Files\netCDF 4.9.2\lib&#10;"
                        targetName="sparta_roomBinauraliser_debug" linkTimeOptimisation="1"/>
-        <CONFIGURATION isDebug="0" name="Release" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/Intel/oneAPI/mkl/latest/include&#10;C:/Program Files (x86)/Intel/oneAPI/ipp/latest/include"
-                       libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
+        <CONFIGURATION isDebug="0" name="Release" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/Intel/oneAPI/mkl/latest/include&#10;C:/Program Files (x86)/Intel/oneAPI/ipp/latest/include&#10;C:\Program Files\netCDF 4.9.2\include"
+                       libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib&#10;C:\Program Files\netCDF 4.9.2\lib"
                        targetName="sparta_roomBinauraliser_debug"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

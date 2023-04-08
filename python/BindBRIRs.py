@@ -1,5 +1,5 @@
 # NOTE: You need two different versions of the sofar package to run this script, as exporting
-#       multiSpeakerBRIR is only possible up to version (0.3.1). You should create two invoronments.
+#       multiSpeakerBRIR is only possible up to version (0.3.1). You should create two envoronments.
 #       One having version (0.3.1) and another one having verion (1.0.0) installed.
 #       Let's start with version (0.3.1)...
 
@@ -35,6 +35,7 @@ multiSpeakerBRIR_LR.Data_Delay = np.append(brirL.Data_Delay, brirR.Data_Delay, a
 #%%
 sf.write_sofa(str(path + "\BRIR_CR1_KU_MICS_multiSpeakerBRIR.sofa"), multiSpeakerBRIR_LR)
 
+#%%
 #######################################################################
 #             CONVENTION - singleRoomMIMOSRIR (SOFAR version (1.0.0))
 #######################################################################
