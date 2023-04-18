@@ -824,7 +824,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 97, y = 1, width = 164, height = 32;
-        juce::String text (TRANS("roomBinauraliser"));
+        juce::String text (TRANS("roombinauraliser"));
         juce::Colour fillColour = juce::Colour (0xffff3300);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
