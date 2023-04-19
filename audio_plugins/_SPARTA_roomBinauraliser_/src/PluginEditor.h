@@ -137,7 +137,6 @@ private:
     std::unique_ptr<juce::TextEditor> te_oscport;
     std::unique_ptr<juce::ToggleButton> TBrpyFlag;
     std::unique_ptr<juce::ToggleButton> TBenableRotation;
-    std::unique_ptr<juce::ToggleButton> TBenablePreProc;
     std::unique_ptr<juce::Label> SL_num_sources;
 
 

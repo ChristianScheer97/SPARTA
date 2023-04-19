@@ -205,14 +205,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     TBenableRotation->setBounds (832, 191, 32, 24);
 
-    TBenablePreProc.reset (new juce::ToggleButton ("new toggle button"));
-    addAndMakeVisible (TBenablePreProc.get());
-    TBenablePreProc->setTooltip (TRANS("Enable HRIR Pre-Processing"));
-    TBenablePreProc->setButtonText (juce::String());
-    TBenablePreProc->addListener (this);
-
-    TBenablePreProc->setBounds (876, 109, 32, 24);
-
     SL_num_sources.reset (new juce::Label ("new slider",
                                            TRANS("1\n")));
     addAndMakeVisible (SL_num_sources.get());
@@ -328,7 +320,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TB_showOutputs->setTooltip("Enables/Disables displaying the HRIR directions in the panning window.");
     //tb_loadJSON->setTooltip("Loads source directions from a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
     //tb_saveJSON->setTooltip("Saves the current source directions to a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
-    TBenablePreProc->setTooltip("Enables/Disables Diffuse-field EQ of the HRIRs, which is based on a weighted summation of all the HRTF magnitudes in the currently loaded set.");
+    
 
     /* Plugin description */
     pluginDescription.reset (new juce::ComboBox ("new combo box"));
@@ -346,7 +338,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     sourceCoordsView_handle->onEmitterButtonChange = [this](int idx, bool isActive)
     {
-        panWindow->hideEmitter(idx, isActive);        
+        panWindow->hideEmitter(idx, isActive);
     };
 
     //[/Constructor]
@@ -374,7 +366,6 @@ PluginEditor::~PluginEditor()
     te_oscport = nullptr;
     TBrpyFlag = nullptr;
     TBenableRotation = nullptr;
-    TBenablePreProc = nullptr;
     SL_num_sources = nullptr;
 
 
@@ -886,18 +877,6 @@ void PluginEditor::paint (juce::Graphics& g)
 
     }
 
-    {
-        int x = 720, y = 106, width = 160, height = 30;
-        juce::String text (TRANS("Apply Diffuse-Field EQ:"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
-    }
-
     //[UserPaint] Add your own custom painting code here..
 
 	g.setColour(Colours::white);
@@ -1015,12 +994,6 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
         roombinauraliser_setEnableRotation(hBin, (int)TBenableRotation->getToggleState());
         //[/UserButtonCode_TBenableRotation]
     }
-    else if (buttonThatWasClicked == TBenablePreProc.get())
-    {
-        //[UserButtonCode_TBenablePreProc] -- add your button handler code here..
-        roombinauraliser_setEnableHRIRsDiffuseEQ(hBin, (int)TBenablePreProc->getToggleState());
-        //[/UserButtonCode_TBenablePreProc]
-    }
 
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
@@ -1092,8 +1065,6 @@ void PluginEditor::timerCallback(int timerID)
             sourceCoordsView_handle->setNCH(roombinauraliser_getNumSources(hBin));
             if(roombinauraliser_getUseDefaultHRIRsflag(hBin)!=TBuseDefaultHRIRs->getToggleState())
                 TBuseDefaultHRIRs->setToggleState(roombinauraliser_getUseDefaultHRIRsflag(hBin), dontSendNotification);
-            if(roombinauraliser_getEnableHRIRsDiffuseEQ(hBin)!=TBenablePreProc->getToggleState())
-                TBenablePreProc->setToggleState(roombinauraliser_getEnableHRIRsDiffuseEQ(hBin), dontSendNotification);
             if(roombinauraliser_getNumSources(hBin)!=SL_num_sources->getText().getIntValue())
                 SL_num_sources->setText(juce::String(roombinauraliser_getNumSources(hBin)),dontSendNotification);
             if(roombinauraliser_getYaw(hBin)!=s_yaw->getValue())
@@ -1331,9 +1302,6 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: ffb9b9b9"/>
     <RECT pos="0 360 920 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
-    <TEXT pos="720 106 160 30" fill="solid: ffffffff" hasStroke="0" text="Apply Diffuse-Field EQ:"
-          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
-          italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <LABEL name="new label" id="167c5975ece5bfaa" memberName="label_N_dirs"
          virtualName="" explicitFocusOrder="0" pos="799 140 51 20" outlineCol="68a3a2a2"
@@ -1404,10 +1372,6 @@ BEGIN_JUCER_METADATA
   <TOGGLEBUTTON name="new toggle button" id="a45ef80fa16bd3f0" memberName="TBenableRotation"
                 virtualName="" explicitFocusOrder="0" pos="832 191 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
-  <TOGGLEBUTTON name="new toggle button" id="c24694aa5b64c28" memberName="TBenablePreProc"
-                virtualName="" explicitFocusOrder="0" pos="876 109 32 24" tooltip="Enable HRIR Pre-Processing"
-                buttonText="" connectedEdges="0" needsCallback="1" radioGroupId="0"
-                state="0"/>
   <LABEL name="new slider" id="209303dce71e135c" memberName="SL_num_sources"
          virtualName="" explicitFocusOrder="0" pos="160 68 40 20" edTextCol="ff000000"
          edBkgCol="0" labelText="1&#10;" editableSingleClick="0" editableDoubleClick="0"
