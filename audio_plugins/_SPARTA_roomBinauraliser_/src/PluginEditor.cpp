@@ -317,10 +317,10 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_HRIR_fs->setTooltip("Sampling rate used when measuring/modelling the HRIRs.");
     label_DAW_fs->setTooltip("Current sampling rate, as dictated by the DAW/Host.");
     TB_showInputs->setTooltip("Enables/Disables displaying the source directions in the panning window.");
-    TB_showOutputs->setTooltip("Enables/Disables displaying the HRIR directions in the panning window.");
+    TB_showOutputs->setTooltip("Enables/Disables displaying the BRIR directions in the panning window.");
     //tb_loadJSON->setTooltip("Loads source directions from a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
     //tb_saveJSON->setTooltip("Saves the current source directions to a JSON file. The JSON file format follows the same convention as the one employed by the IEM plugin suite (https://plugins.iem.at/docs/configurationfiles/).");
-    
+
 
     /* Plugin description */
     pluginDescription.reset (new juce::ComboBox ("new combo box"));
@@ -1082,8 +1082,11 @@ void PluginEditor::timerCallback(int timerID)
                 roombinauraliser_getProgressBarText(hBin, (char*)text);
                 progressbar.setTextToDisplay(String(text));
             }
-            else
+            else {
                 removeChildComponent(&progressbar);
+                sourceCoordsView_handle->setNCH(roombinauraliser_getNumSources(hBin));
+                refreshPanViewWindow = true;
+            }
 
             /* disable certain parameters if currently initialising */
             if(roombinauraliser_getCodecStatus(hBin)==CODEC_STATUS_INITIALISING){
