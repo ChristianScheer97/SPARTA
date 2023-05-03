@@ -94,7 +94,10 @@ inputCoordsView::inputCoordsView (PluginProcessor* ownerFilter, int _maxNCH, int
         /* create and initialise emitter number button */
         emitterButtons[i].reset(new TextButton(String(i+1), "Enable/Disable emitter."));
         addAndMakeVisible(emitterButtons[i].get());
-        emitterButtons[i]->setBounds(76, 4 + i * sensorEdit_height, 24, 24);
+        if (i<9)
+            emitterButtons[i]->setBounds(76, 4 + i * sensorEdit_height, 24, 24);
+        else
+            emitterButtons[i]->setBounds(72, 4 + i * sensorEdit_height, 32, 24);
         emitterButtons[i]->setClickingTogglesState(true);
         emitterButtons[i]->setToggleState(true, dontSendNotification);
         emitterButtons[i]->setColour(juce::TextButton::buttonOnColourId, Colours::darkred);

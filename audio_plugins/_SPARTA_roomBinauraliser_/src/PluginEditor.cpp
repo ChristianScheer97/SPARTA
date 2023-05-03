@@ -803,7 +803,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 16, y = 1, width = 100, height = 32;
-        juce::String text (TRANS("SPARTA |"));
+        juce::String text (TRANS("SPARTA|"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -814,8 +814,8 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 97, y = 1, width = 164, height = 32;
-        juce::String text (TRANS("roombinauraliser"));
+        int x = 92, y = 1, width = 164, height = 32;
+        juce::String text (TRANS("RoomBinauraliser"));
         juce::Colour fillColour = juce::Colour (0xffff3300);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -1288,10 +1288,10 @@ BEGIN_JUCER_METADATA
     <TEXT pos="721 187 160 30" fill="solid: ffffffff" hasStroke="0" text="Enable Rotation:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="16 1 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA |"
+    <TEXT pos="16 1 100 32" fill="solid: ffffffff" hasStroke="0" text="SPARTA|"
           fontname="Default font" fontsize="18.8" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="97 1 164 32" fill="solid: ffff3300" hasStroke="0" text="roombinauraliser"
+    <TEXT pos="92 1 164 32" fill="solid: ffff3300" hasStroke="0" text="RoomBinauraliser"
           fontname="Default font" fontsize="18.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="64 108 108 28" fill="solid: ffffffff" hasStroke="0" text="Azi&#176;   #   Elev&#176;"
