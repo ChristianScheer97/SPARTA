@@ -333,7 +333,6 @@ void PluginProcessor::getStateInformation (MemoryBlock& destData)
     
     xml.setAttribute("JSONFilePath", lastDir.getFullPathName());
     
-    xml.setAttribute("INTERP_MODE", roombinauraliser_getInterpMode(hBin));
     xml.setAttribute("ENABLE_ROT", roombinauraliser_getEnableRotation(hBin));
     xml.setAttribute("YAW", roombinauraliser_getYaw(hBin));
     xml.setAttribute("PITCH", roombinauraliser_getPitch(hBin));

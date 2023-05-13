@@ -15,7 +15,7 @@
               reportAppUsage="0" splashScreenColour="Dark" buildStandalone="1"
               enableIAA="0" cppLanguageStandard="17" companyCopyright="Aalto"
               pluginFormats="buildStandalone,buildVST" jucerFormatVersion="1"
-              headerPath="C:\Program Files\netCDF 4.9.1\include">
+              headerPath="C:\ProgramData\netCDF 4.9.2\include&#10;">
   <MAINGROUP id="imnfnp" name="sparta_roomBinauraliser">
     <FILE id="UwaAVc" name="ConfigurationHelper.h" compile="0" resource="0"
           file="../resources/ConfigurationHelper.h"/>
@@ -385,7 +385,7 @@
       </MODULEPATHS>
     </LINUX_MAKE>
     <VS2022 targetFolder="make/win64/VisualStudio2022" extraDefs="SAF_USE_INTEL_MKL_LP64&#10;SAF_USE_INTEL_IPP&#10;SAF_ENABLE_SOFA_READER_MODULE&#10;SAF_ENABLE_NETCDF"
-            extraCompilerFlags="/bigobj" externalLibraries="saf_mkl_custom_lp64.lib&#10;saf_ipp_custom.lib&#10;netcdf.lib"
+            extraCompilerFlags="/bigobj" externalLibraries="saf_mkl_custom_lp64.lib&#10;saf_ipp_custom.lib&#10;&quot;C:\ProgramData\netCDF 4.9.2\lib\netcdf.lib&quot;"
             windowsTargetPlatformVersion="Latest">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/Intel/oneAPI/mkl/latest/include&#10;C:/Program Files (x86)/Intel/oneAPI/ipp/latest/include&#10;C:\Program Files\netCDF 4.9.2\include"

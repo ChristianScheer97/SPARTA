@@ -106,15 +106,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     label_N_Tri->setBounds (853, 140, 51, 20);
 
-    CBinterpMode.reset (new juce::ComboBox ("new combo box"));
-    addAndMakeVisible (CBinterpMode.get());
-    CBinterpMode->setEditableText (false);
-    CBinterpMode->setJustificationType (juce::Justification::centredLeft);
-    CBinterpMode->setTextWhenNothingSelected (juce::String());
-    CBinterpMode->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    CBinterpMode->addListener (this);
-
-    CBinterpMode->setBounds (336, 324, 105, 20);
 
     s_yaw.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_yaw.get());
@@ -243,12 +234,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_num_sources->setColour(Slider::trackColourId, Colours::transparentBlack);
 
 
-    /* interp modes */
-    CBinterpMode->addItem(TRANS("Triangular"), INTERP_TRI);
-    CBinterpMode->addItem(TRANS("Triangular (PS)"), INTERP_TRI_PS);
 
-
-    /* ProgressBar */
+    /* ProgressBar */                          
     progress = 0.0;
     progressbar.setBounds(getLocalBounds().getCentreX()-175, getLocalBounds().getCentreY()-17, 350, 35);
     progressbar.ProgressBar::setAlwaysOnTop(true);
@@ -280,7 +267,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 /*SL_num_sources->setValue(roombinauraliser_getNumSources(hBin),dontSendNotification); */
     TB_showInputs->setToggleState(true, dontSendNotification);
     TB_showOutputs->setToggleState(false, dontSendNotification);
-    CBinterpMode->setSelectedId(roombinauraliser_getInterpMode(hBin), dontSendNotification);
     TBenableRotation->setToggleState((bool)roombinauraliser_getEnableRotation(hBin), dontSendNotification);
     s_yaw->setValue(roombinauraliser_getYaw(hBin), dontSendNotification);
     s_pitch->setValue(roombinauraliser_getPitch(hBin), dontSendNotification);
@@ -302,7 +288,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* tooltips */
     TBuseDefaultHRIRs->setTooltip("If this is 'ticked', the plug-in is using the default HRIR set from the Spatial_Audio_Framework.");
     fileChooser.setTooltip("Optionally, a custom HRIR set may be loaded via the SOFA standard. Note that if the plug-in fails to load the specified .sofa file, it will revert to the default HRIR data.");
-    CBinterpMode->setTooltip("Interpolation approach. Note that this plug-in can also perform \"phase-simplification\" (PS) of the HRTFs, which involves estimating the ITDs for all the HRIRs, removing the phase from the HRTFs, but then re-introducing the phase as IPDs per frequency-bin. Note that binaural room impulse responses (BRIRs) are not supported by either of the two modes!");
     TBenableRotation->setTooltip("Enables/Disables rotation of the source directions.");
     s_yaw->setTooltip("Sets the 'Yaw' rotation angle (in degrees).");
     s_pitch->setTooltip("Sets the 'Pitch' rotation angle (in degrees).");
@@ -356,7 +341,6 @@ PluginEditor::~PluginEditor()
     TB_showInputs = nullptr;
     TB_showOutputs = nullptr;
     label_N_Tri = nullptr;
-    CBinterpMode = nullptr;
     s_yaw = nullptr;
     s_pitch = nullptr;
     s_roll = nullptr;
@@ -606,18 +590,6 @@ void PluginEditor::paint (juce::Graphics& g)
         g.setColour (strokeColour);
         g.drawRect (x, y, width, height, 1);
 
-    }
-
-    {
-        int x = 222, y = 319, width = 132, height = 30;
-        juce::String text (TRANS("Interp. Mode:"));
-        juce::Colour fillColour = juce::Colours::white;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
-        g.drawText (text, x, y, width, height,
-                    juce::Justification::centredLeft, true);
     }
 
     {
@@ -1004,12 +976,6 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
     //[UsercomboBoxChanged_Pre]
     //[/UsercomboBoxChanged_Pre]
 
-    if (comboBoxThatHasChanged == CBinterpMode.get())
-    {
-        //[UserComboBoxCode_CBinterpMode] -- add your combo box handling code here..
-        roombinauraliser_setInterpMode(hBin, CBinterpMode->getSelectedId());
-        //[/UserComboBoxCode_CBinterpMode]
-    }
 
     //[UsercomboBoxChanged_Post]
     //[/UsercomboBoxChanged_Post]
@@ -1096,8 +1062,6 @@ void PluginEditor::timerCallback(int timerID)
                     SL_num_sources->setEnabled(false);
                 if(TBuseDefaultHRIRs->isEnabled())
                     TBuseDefaultHRIRs->setEnabled(false);
-                if(CBinterpMode->isEnabled())
-                    CBinterpMode->setEnabled(false);
                 /*
                 if(tb_loadJSON->isEnabled())
                     tb_loadJSON->setEnabled(false);
@@ -1114,8 +1078,6 @@ void PluginEditor::timerCallback(int timerID)
                     SL_num_sources->setEnabled(true);
                 if(!TBuseDefaultHRIRs->isEnabled())
                     TBuseDefaultHRIRs->setEnabled(true);
-                if(!CBinterpMode->isEnabled())
-                    CBinterpMode->setEnabled(true);
                 /*
                 if(!tb_loadJSON->isEnabled())
                     tb_loadJSON->setEnabled(true);
