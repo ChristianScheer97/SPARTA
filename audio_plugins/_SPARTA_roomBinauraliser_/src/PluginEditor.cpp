@@ -85,7 +85,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TB_showInputs->setButtonText (juce::String());
     TB_showInputs->addListener (this);
 
-    TB_showInputs->setBounds (558, 322, 24, 24);
+    TB_showInputs->setBounds (551, 322, 24, 24);
 
     TB_showOutputs.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TB_showOutputs.get());
@@ -105,7 +105,6 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     label_N_Tri->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
     label_N_Tri->setBounds (853, 140, 51, 20);
-
 
     s_yaw.reset (new juce::Slider ("new slider"));
     addAndMakeVisible (s_yaw.get());
@@ -207,6 +206,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     SL_num_sources->setBounds (160, 68, 40, 20);
 
+    TBenablePartConv.reset (new juce::ToggleButton ("new toggle button"));
+    addAndMakeVisible (TBenablePartConv.get());
+    TBenablePartConv->setButtonText (juce::String());
+    TBenablePartConv->addListener (this);
+
+    TBenablePartConv->setBounds (395, 322, 24, 24);
+
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -235,7 +241,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
 
 
-    /* ProgressBar */                          
+    /* ProgressBar */
     progress = 0.0;
     progressbar.setBounds(getLocalBounds().getCentreX()-175, getLocalBounds().getCentreY()-17, 350, 35);
     progressbar.ProgressBar::setAlwaysOnTop(true);
@@ -351,6 +357,7 @@ PluginEditor::~PluginEditor()
     TBrpyFlag = nullptr;
     TBenableRotation = nullptr;
     SL_num_sources = nullptr;
+    TBenablePartConv = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -469,7 +476,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 446, y = 312, width = 260, height = 41;
+        int x = 440, y = 312, width = 266, height = 41;
         juce::Colour fillColour = juce::Colour (0x10f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -556,7 +563,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 457, y = 319, width = 132, height = 30;
+        int x = 448, y = 319, width = 132, height = 30;
         juce::String text (TRANS("Show Emitters:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -568,7 +575,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 582, y = 319, width = 122, height = 30;
+        int x = 589, y = 319, width = 110, height = 30;
         juce::String text (TRANS("Show BRIRs:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -580,7 +587,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 214, y = 312, width = 233, height = 41;
+        int x = 214, y = 312, width = 218, height = 41;
         juce::Colour fillColour = juce::Colour (0x10f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -590,6 +597,18 @@ void PluginEditor::paint (juce::Graphics& g)
         g.setColour (strokeColour);
         g.drawRect (x, y, width, height, 1);
 
+    }
+
+    {
+        int x = 222, y = 319, width = 170, height = 30;
+        juce::String text (TRANS("Partitioned Convolution:"));
+        juce::Colour fillColour = juce::Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centredLeft, true);
     }
 
     {
@@ -966,19 +985,15 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
         roombinauraliser_setEnableRotation(hBin, (int)TBenableRotation->getToggleState());
         //[/UserButtonCode_TBenableRotation]
     }
+    else if (buttonThatWasClicked == TBenablePartConv.get())
+    {
+        //[UserButtonCode_TBenablePartConv] -- add your button handler code here..
+        roombinauraliser_setEnablePartConv(hBin, (int)TBenablePartConv->getToggleState());
+        //[/UserButtonCode_TBenablePartConv]
+    }
 
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
-}
-
-void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
-{
-    //[UsercomboBoxChanged_Pre]
-    //[/UsercomboBoxChanged_Pre]
-
-
-    //[UsercomboBoxChanged_Post]
-    //[/UsercomboBoxChanged_Post]
 }
 
 void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
@@ -1177,7 +1192,7 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="12 104 196 249" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="446 312 260 41" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="440 312 266 41" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="712 58 196 78" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -1195,15 +1210,15 @@ BEGIN_JUCER_METADATA
     <TEXT pos="720 58 160 30" fill="solid: ffffffff" hasStroke="0" text="Use Default BRIR set:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="457 319 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Emitters:"
+    <TEXT pos="448 319 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Emitters:"
           fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="582 319 122 30" fill="solid: ffffffff" hasStroke="0" text="Show BRIRs:"
+    <TEXT pos="589 319 110 30" fill="solid: ffffffff" hasStroke="0" text="Show BRIRs:"
           fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="214 312 233 41" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="214 312 218 41" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="222 319 132 30" fill="solid: ffffffff" hasStroke="0" text="Interp. Mode:"
+    <TEXT pos="222 319 170 30" fill="solid: ffffffff" hasStroke="0" text="Partitioned Convolution:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="719 158 89 30" fill="solid: ffffffff" hasStroke="0" text="HRIR/DAW Fs:"
@@ -1287,7 +1302,7 @@ BEGIN_JUCER_METADATA
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <TOGGLEBUTTON name="new toggle button" id="74817bb8a57611dc" memberName="TB_showInputs"
-                virtualName="" explicitFocusOrder="0" pos="558 322 24 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="551 322 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TOGGLEBUTTON name="new toggle button" id="1a1dfbb1d4296140" memberName="TB_showOutputs"
                 virtualName="" explicitFocusOrder="0" pos="672 322 24 24" buttonText=""
@@ -1297,9 +1312,6 @@ BEGIN_JUCER_METADATA
          edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
-  <COMBOBOX name="new combo box" id="aeb0b2f644784061" memberName="CBinterpMode"
-            virtualName="" explicitFocusOrder="0" pos="336 324 105 20" editable="0"
-            layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <SLIDER name="new slider" id="ace036a85eec9703" memberName="s_yaw" virtualName=""
           explicitFocusOrder="0" pos="717 260 60 68" rotarysliderfill="ff315b6e"
           rotaryslideroutline="ff5c5d5e" textboxtext="ffffffff" textboxbkgd="ffffff"
@@ -1342,6 +1354,9 @@ BEGIN_JUCER_METADATA
          edBkgCol="0" labelText="1&#10;" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15.0"
          kerning="0.0" bold="0" italic="0" justification="34"/>
+  <TOGGLEBUTTON name="new toggle button" id="470d6e595fa6d15e" memberName="TBenablePartConv"
+                virtualName="" explicitFocusOrder="0" pos="395 322 24 24" buttonText=""
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

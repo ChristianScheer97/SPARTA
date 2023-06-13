@@ -53,7 +53,6 @@ class PluginEditor  : public AudioProcessorEditor,
                       public MultiTimer,
                       private FilenameComponentListener,
                       public juce::Button::Listener,
-                      public juce::ComboBox::Listener,
                       public juce::Slider::Listener
 {
 public:
@@ -70,7 +69,6 @@ public:
     void paint (juce::Graphics& g) override;
     void resized() override;
     void buttonClicked (juce::Button* buttonThatWasClicked) override;
-    void comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged) override;
     void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
 
 
@@ -127,7 +125,6 @@ private:
     std::unique_ptr<juce::ToggleButton> TB_showInputs;
     std::unique_ptr<juce::ToggleButton> TB_showOutputs;
     std::unique_ptr<juce::Label> label_N_Tri;
-    std::unique_ptr<juce::ComboBox> CBinterpMode;
     std::unique_ptr<juce::Slider> s_yaw;
     std::unique_ptr<juce::Slider> s_pitch;
     std::unique_ptr<juce::Slider> s_roll;
@@ -138,6 +135,7 @@ private:
     std::unique_ptr<juce::ToggleButton> TBrpyFlag;
     std::unique_ptr<juce::ToggleButton> TBenableRotation;
     std::unique_ptr<juce::Label> SL_num_sources;
+    std::unique_ptr<juce::ToggleButton> TBenablePartConv;
 
 
     //==============================================================================
