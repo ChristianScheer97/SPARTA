@@ -46,6 +46,19 @@ sf.write_sofa(str(path + "\BRIR_CR1_KU_MICS_multiSpeakerBRIR.sofa"), multiSpeake
 
 # STEP 5: Preprocessing for conversion to singleRoomMIMOSRIR
 #%% 
+singleRoomMIMOSRIR_L = brirL.copy()
+singleRoomMIMOSRIR_R = brirR.copy()
+singleRoomMIMOSRIRS = [singleRoomMIMOSRIR_L, singleRoomMIMOSRIR_R]
+for srir in singleRoomMIMOSRIRS:
+    srir.delete("GLOBAL_ListenerDescription")
+    srir.delete("GLOBAL_ReceiverDescription")
+    srir.delete("GLOBAL_SourceDescription")
+    srir.delete("GLOBAL_EmitterDescription")
+    srir.ListenerPosition = np.repeat(srir.ListenerPosition, 360, axis=0)
+    srir.SourcePosition = np.repeat(srir.SourcePosition, 360, axis=0)
+    srir.Data_Delay = srir.Data_Delay[:, :, 0:1]
+    srir.upgrade_convention('SingleRoomMIMOSRIR_1.0', True)
+
 singleRoomMIMOSRIR_LR = multiSpeakerBRIR_LR.copy()
 singleRoomMIMOSRIR_LR.delete("GLOBAL_ListenerDescription")
 singleRoomMIMOSRIR_LR.delete("GLOBAL_ReceiverDescription")
@@ -62,4 +75,6 @@ singleRoomMIMOSRIR_LR.upgrade_convention('SingleRoomMIMOSRIR_1.0', True)
 # STEP 7: Write singelRoomMIMOSRIR
 #%% 
 sf.write_sofa(str(path + "\BRIR_CR1_KU_MICS_SingleRoomMIMOSRIR_1.0.sofa"),singleRoomMIMOSRIR_LR)
+sf.write_sofa(str(path + "\BRIR_CR1_KU_MICS_SingleRoomMIMOSRIR_L_1.0.sofa"),singleRoomMIMOSRIR_L)
+sf.write_sofa(str(path + "\BRIR_CR1_KU_MICS_SingleRoomMIMOSRIR_R_1.0.sofa"),singleRoomMIMOSRIR_R)
 
