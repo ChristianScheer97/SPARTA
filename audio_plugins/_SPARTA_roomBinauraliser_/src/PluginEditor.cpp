@@ -988,7 +988,7 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == TBenablePartConv.get())
     {
         //[UserButtonCode_TBenablePartConv] -- add your button handler code here..
-        roombinauraliser_setEnablePartConv(hBin, (int)TBenablePartConv->getToggleState());
+        //roombinauraliser_setEnablePartConv(hBin, (int)TBenablePartConv->getToggleState());
         //[/UserButtonCode_TBenablePartConv]
     }
 
