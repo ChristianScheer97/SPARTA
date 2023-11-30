@@ -1060,8 +1060,10 @@ void PluginEditor::timerCallback(int timerID)
                 addAndMakeVisible(progressbar);
                 progress = (double)roombinauraliser_getProgressBar0_1(hBin);
                 char text[PROGRESSBARTEXT_CHAR_LENGTH];
-                roombinauraliser_getProgressBarText(hBin, (char*)text);
+                char tooltip[PROGRESSBARTEXT_CHAR_LENGTH*10];
+                roombinauraliser_getProgressBarText(hBin, (char*)text, (char*)tooltip);
                 progressbar.setTextToDisplay(String(text));
+                progressbar.setTooltip(String(tooltip));
             }
             else {
                 removeChildComponent(&progressbar);
