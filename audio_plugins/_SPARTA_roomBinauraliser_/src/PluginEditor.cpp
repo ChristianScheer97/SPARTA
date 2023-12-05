@@ -66,7 +66,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBuseDefaultHRIRs->setButtonText (juce::String());
     TBuseDefaultHRIRs->addListener (this);
 
-    TBuseDefaultHRIRs->setBounds (876, 61, 32, 24);
+    TBuseDefaultHRIRs->setBounds (878, 61, 32, 24);
 
     label_DAW_fs.reset (new juce::Label ("new label",
                                          juce::String()));
@@ -213,6 +213,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     TBenablePartConv->setBounds (395, 322, 24, 24);
 
+    TBenablePreProc.reset (new juce::ToggleButton ("new toggle button"));
+    addAndMakeVisible (TBenablePreProc.get());
+    TBenablePreProc->setButtonText (juce::String());
+    TBenablePreProc->addListener (this);
+
+    TBenablePreProc->setBounds (878, 109, 32, 24);
+
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -358,6 +365,7 @@ PluginEditor::~PluginEditor()
     TBenableRotation = nullptr;
     SL_num_sources = nullptr;
     TBenablePartConv = nullptr;
+    TBenablePreProc = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -868,6 +876,18 @@ void PluginEditor::paint (juce::Graphics& g)
 
     }
 
+    {
+        int x = 720, y = 106, width = 160, height = 30;
+        juce::String text (TRANS("Apply Diffuse-Field EQ:"));
+        juce::Colour fillColour = juce::Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+        g.drawText (text, x, y, width, height,
+                    juce::Justification::centredLeft, true);
+    }
+
     //[UserPaint] Add your own custom painting code here..
 
 	g.setColour(Colours::white);
@@ -990,6 +1010,12 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
         //[UserButtonCode_TBenablePartConv] -- add your button handler code here..
         //roombinauraliser_setEnablePartConv(hBin, (int)TBenablePartConv->getToggleState());
         //[/UserButtonCode_TBenablePartConv]
+    }
+    else if (buttonThatWasClicked == TBenablePreProc.get())
+    {
+        //[UserButtonCode_TBenablePreProc] -- add your button handler code here..
+        roombinauraliser_setEnableHRIRsDiffuseEQ(hBin, (int)TBenablePreProc->getToggleState());
+        //[/UserButtonCode_TBenablePreProc]
     }
 
     //[UserbuttonClicked_Post]
@@ -1284,6 +1310,9 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: ffb9b9b9"/>
     <RECT pos="0 360 920 2" fill="solid: 61a52a" hasStroke="1" stroke="2, mitered, butt"
           strokeColour="solid: ffb9b9b9"/>
+    <TEXT pos="720 106 160 30" fill="solid: ffffffff" hasStroke="0" text="Apply Diffuse-Field EQ:"
+          fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
+          italic="0" justification="33" typefaceStyle="Bold"/>
   </BACKGROUND>
   <LABEL name="new label" id="167c5975ece5bfaa" memberName="label_N_dirs"
          virtualName="" explicitFocusOrder="0" pos="799 140 51 20" outlineCol="68a3a2a2"
@@ -1296,7 +1325,7 @@ BEGIN_JUCER_METADATA
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <TOGGLEBUTTON name="new toggle button" id="f7f951a1b21e1a11" memberName="TBuseDefaultHRIRs"
-                virtualName="" explicitFocusOrder="0" pos="876 61 32 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="878 61 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <LABEL name="new label" id="c59fb2aab2496c4e" memberName="label_DAW_fs"
          virtualName="" explicitFocusOrder="0" pos="853 164 51 20" outlineCol="68a3a2a2"
@@ -1358,6 +1387,9 @@ BEGIN_JUCER_METADATA
          kerning="0.0" bold="0" italic="0" justification="34"/>
   <TOGGLEBUTTON name="new toggle button" id="470d6e595fa6d15e" memberName="TBenablePartConv"
                 virtualName="" explicitFocusOrder="0" pos="395 322 24 24" buttonText=""
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
+  <TOGGLEBUTTON name="new toggle button" id="39915eece3ee5005" memberName="TBenablePreProc"
+                virtualName="" explicitFocusOrder="0" pos="878 109 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
 

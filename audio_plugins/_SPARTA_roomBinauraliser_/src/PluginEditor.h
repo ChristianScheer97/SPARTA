@@ -136,6 +136,7 @@ private:
     std::unique_ptr<juce::ToggleButton> TBenableRotation;
     std::unique_ptr<juce::Label> SL_num_sources;
     std::unique_ptr<juce::ToggleButton> TBenablePartConv;
+    std::unique_ptr<juce::ToggleButton> TBenablePreProc;
 
 
     //==============================================================================
