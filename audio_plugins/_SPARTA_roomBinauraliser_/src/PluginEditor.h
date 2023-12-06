@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 7.0.5
+  Created with Projucer version: 7.0.9
 
   ------------------------------------------------------------------------------
 
@@ -53,7 +53,8 @@ class PluginEditor  : public AudioProcessorEditor,
                       public MultiTimer,
                       private FilenameComponentListener,
                       public juce::Button::Listener,
-                      public juce::Slider::Listener
+                      public juce::Slider::Listener,
+                      public juce::ComboBox::Listener
 {
 public:
     //==============================================================================
@@ -70,6 +71,7 @@ public:
     void resized() override;
     void buttonClicked (juce::Button* buttonThatWasClicked) override;
     void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
+    void comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged) override;
 
 
 
@@ -135,8 +137,8 @@ private:
     std::unique_ptr<juce::ToggleButton> TBrpyFlag;
     std::unique_ptr<juce::ToggleButton> TBenableRotation;
     std::unique_ptr<juce::Label> SL_num_sources;
-    std::unique_ptr<juce::ToggleButton> TBenablePartConv;
     std::unique_ptr<juce::ToggleButton> TBenablePreProc;
+    std::unique_ptr<juce::ComboBox> CBinterpMode;
 
 
     //==============================================================================

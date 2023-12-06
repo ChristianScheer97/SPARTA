@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 7.0.5
+  Created with Projucer version: 7.0.9
 
   ------------------------------------------------------------------------------
 
@@ -85,7 +85,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TB_showInputs->setButtonText (juce::String());
     TB_showInputs->addListener (this);
 
-    TB_showInputs->setBounds (551, 322, 24, 24);
+    TB_showInputs->setBounds (555, 322, 24, 24);
 
     TB_showOutputs.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TB_showOutputs.get());
@@ -177,7 +177,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     te_oscport->setColour (juce::TextEditor::textColourId, juce::Colours::white);
     te_oscport->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00ffffff));
     te_oscport->setColour (juce::TextEditor::outlineColourId, juce::Colour (0x6c838080));
-    te_oscport->setText (TRANS("9000"));
+    te_oscport->setText (TRANS ("9000"));
 
     te_oscport->setBounds (848, 216, 44, 22);
 
@@ -196,7 +196,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBenableRotation->setBounds (832, 191, 32, 24);
 
     SL_num_sources.reset (new juce::Label ("new slider",
-                                           TRANS("1\n")));
+                                           TRANS ("1\n")));
     addAndMakeVisible (SL_num_sources.get());
     SL_num_sources->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     SL_num_sources->setJustificationType (juce::Justification::centredRight);
@@ -206,19 +206,22 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 
     SL_num_sources->setBounds (160, 68, 40, 20);
 
-    TBenablePartConv.reset (new juce::ToggleButton ("new toggle button"));
-    addAndMakeVisible (TBenablePartConv.get());
-    TBenablePartConv->setButtonText (juce::String());
-    TBenablePartConv->addListener (this);
-
-    TBenablePartConv->setBounds (395, 322, 24, 24);
-
     TBenablePreProc.reset (new juce::ToggleButton ("new toggle button"));
     addAndMakeVisible (TBenablePreProc.get());
     TBenablePreProc->setButtonText (juce::String());
     TBenablePreProc->addListener (this);
 
     TBenablePreProc->setBounds (878, 109, 32, 24);
+
+    CBinterpMode.reset (new juce::ComboBox ("new combo box"));
+    addAndMakeVisible (CBinterpMode.get());
+    CBinterpMode->setEditableText (false);
+    CBinterpMode->setJustificationType (juce::Justification::centredLeft);
+    CBinterpMode->setTextWhenNothingSelected (juce::String());
+    CBinterpMode->setTextWhenNoChoicesAvailable (TRANS ("(no choices)"));
+    CBinterpMode->addListener (this);
+
+    CBinterpMode->setBounds (316, 322, 125, 24);
 
 
     //[UserPreSize]
@@ -246,7 +249,9 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* remove slider bit of these sliders */
     SL_num_sources->setColour(Slider::trackColourId, Colours::transparentBlack);
 
-
+    /* interp modes */
+        CBinterpMode->addItem(TRANS("Triangular"), INTERP_TRI);
+        CBinterpMode->addItem(TRANS("Triangular (PS)"), INTERP_TRI_PS);
 
     /* ProgressBar */
     progress = 0.0;
@@ -280,6 +285,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
 /*SL_num_sources->setValue(roombinauraliser_getNumSources(hBin),dontSendNotification); */
     TB_showInputs->setToggleState(true, dontSendNotification);
     TB_showOutputs->setToggleState(false, dontSendNotification);
+    CBinterpMode->setSelectedId(roombinauraliser_getInterpMode(hBin), dontSendNotification);
     TBenableRotation->setToggleState((bool)roombinauraliser_getEnableRotation(hBin), dontSendNotification);
     s_yaw->setValue(roombinauraliser_getYaw(hBin), dontSendNotification);
     s_pitch->setValue(roombinauraliser_getPitch(hBin), dontSendNotification);
@@ -302,6 +308,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     TBuseDefaultHRIRs->setTooltip("If this is 'ticked', the plug-in is using the default HRIR set from the Spatial_Audio_Framework.");
     fileChooser.setTooltip("Optionally, a custom HRIR set may be loaded via the SOFA standard. Note that if the plug-in fails to load the specified .sofa file, it will revert to the default HRIR data.");
     TBenableRotation->setTooltip("Enables/Disables rotation of the source directions.");
+    CBinterpMode->setTooltip("Interpolation approach. Note that this plug-in can also perform \"phase-simplification\" (PS) of the HRTFs, which involves estimating the ITDs for all the BRIRs, removing the phase from the HRTFs, but then re-introducing the phase as IPDs per frequency-bin.");
     s_yaw->setTooltip("Sets the 'Yaw' rotation angle (in degrees).");
     s_pitch->setTooltip("Sets the 'Pitch' rotation angle (in degrees).");
     s_roll->setTooltip("Sets the 'Roll' rotation angle (in degrees).");
@@ -364,8 +371,8 @@ PluginEditor::~PluginEditor()
     TBrpyFlag = nullptr;
     TBenableRotation = nullptr;
     SL_num_sources = nullptr;
-    TBenablePartConv = nullptr;
     TBenablePreProc = nullptr;
+    CBinterpMode = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -484,7 +491,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 440, y = 312, width = 266, height = 41;
+        int x = 446, y = 312, width = 260, height = 41;
         juce::Colour fillColour = juce::Colour (0x10f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -524,7 +531,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 24, y = 63, width = 153, height = 30;
-        juce::String text (TRANS("Number of Emitters"));
+        juce::String text (TRANS ("Number of Emitters"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -536,7 +543,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 788, y = 32, width = 113, height = 30;
-        juce::String text (TRANS("BRIRs"));
+        juce::String text (TRANS ("BRIRs"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -548,7 +555,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 392, y = 32, width = 136, height = 30;
-        juce::String text (TRANS("Scene Viewer"));
+        juce::String text (TRANS ("Scene Viewer"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -560,7 +567,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 720, y = 58, width = 160, height = 30;
-        juce::String text (TRANS("Use Default BRIR set:"));
+        juce::String text (TRANS ("Use Default BRIR set:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -571,8 +578,8 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 448, y = 319, width = 132, height = 30;
-        juce::String text (TRANS("Show Emitters:"));
+        int x = 455, y = 319, width = 132, height = 30;
+        juce::String text (TRANS ("Show Emitters:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -583,8 +590,8 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 589, y = 319, width = 110, height = 30;
-        juce::String text (TRANS("Show BRIRs:"));
+        int x = 590, y = 319, width = 110, height = 30;
+        juce::String text (TRANS ("Show BRIRs:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -595,7 +602,7 @@ void PluginEditor::paint (juce::Graphics& g)
     }
 
     {
-        int x = 214, y = 312, width = 218, height = 41;
+        int x = 214, y = 312, width = 233, height = 41;
         juce::Colour fillColour = juce::Colour (0x10f4f4f4);
         juce::Colour strokeColour = juce::Colour (0x67a0a0a0);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -609,7 +616,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 222, y = 319, width = 170, height = 30;
-        juce::String text (TRANS("Partitioned Convolution:"));
+        juce::String text (TRANS ("Interp. Mode:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -621,7 +628,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 719, y = 158, width = 89, height = 30;
-        juce::String text (TRANS("HRIR/DAW Fs:"));
+        juce::String text (TRANS ("HRIR/DAW Fs:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -633,7 +640,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 719, y = 134, width = 132, height = 30;
-        juce::String text (TRANS("N Dirs/Tri:"));
+        juce::String text (TRANS ("N Dirs/Tri:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -658,7 +665,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 735, y = 238, width = 49, height = 30;
-        juce::String text (TRANS("\\ypr[0]"));
+        juce::String text (TRANS ("\\ypr[0]"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -670,7 +677,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 775, y = 238, width = 46, height = 30;
-        juce::String text (TRANS("Pitch"));
+        juce::String text (TRANS ("Pitch"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -682,7 +689,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 831, y = 238, width = 54, height = 30;
-        juce::String text (TRANS("Roll"));
+        juce::String text (TRANS ("Roll"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -694,7 +701,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 831, y = 326, width = 63, height = 30;
-        juce::String text (TRANS("+/-"));
+        juce::String text (TRANS ("+/-"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -706,7 +713,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 703, y = 326, width = 63, height = 30;
-        juce::String text (TRANS("+/-"));
+        juce::String text (TRANS ("+/-"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -718,7 +725,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 767, y = 326, width = 63, height = 30;
-        juce::String text (TRANS("+/-"));
+        juce::String text (TRANS ("+/-"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -730,7 +737,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 795, y = 210, width = 91, height = 35;
-        juce::String text (TRANS("OSC port:"));
+        juce::String text (TRANS ("OSC port:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -742,7 +749,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 698, y = 238, width = 62, height = 30;
-        juce::String text (TRANS("Yaw"));
+        juce::String text (TRANS ("Yaw"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -754,7 +761,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 808, y = 238, width = 40, height = 30;
-        juce::String text (TRANS("\\ypr[1]"));
+        juce::String text (TRANS ("\\ypr[1]"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -766,7 +773,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 864, y = 238, width = 40, height = 30;
-        juce::String text (TRANS("\\ypr[2]"));
+        juce::String text (TRANS ("\\ypr[2]"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -778,7 +785,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 710, y = 210, width = 54, height = 35;
-        juce::String text (TRANS("R-P-Y:"));
+        juce::String text (TRANS ("R-P-Y:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -790,7 +797,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 721, y = 187, width = 160, height = 30;
-        juce::String text (TRANS("Enable Rotation:"));
+        juce::String text (TRANS ("Enable Rotation:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -802,7 +809,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 16, y = 1, width = 100, height = 32;
-        juce::String text (TRANS("SPARTA|"));
+        juce::String text (TRANS ("SPARTA|"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -814,7 +821,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 92, y = 1, width = 164, height = 32;
-        juce::String text (TRANS("RoomBinauraliser"));
+        juce::String text (TRANS ("RoomBinauraliser"));
         juce::Colour fillColour = juce::Colour (0xffff3300);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -878,7 +885,7 @@ void PluginEditor::paint (juce::Graphics& g)
 
     {
         int x = 720, y = 106, width = 160, height = 30;
-        juce::String text (TRANS("Apply Diffuse-Field EQ:"));
+        juce::String text (TRANS ("Apply Diffuse-Field EQ:"));
         juce::Colour fillColour = juce::Colours::white;
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -1005,12 +1012,6 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
         roombinauraliser_setEnableRotation(hBin, (int)TBenableRotation->getToggleState());
         //[/UserButtonCode_TBenableRotation]
     }
-    else if (buttonThatWasClicked == TBenablePartConv.get())
-    {
-        //[UserButtonCode_TBenablePartConv] -- add your button handler code here..
-        //roombinauraliser_setEnablePartConv(hBin, (int)TBenablePartConv->getToggleState());
-        //[/UserButtonCode_TBenablePartConv]
-    }
     else if (buttonThatWasClicked == TBenablePreProc.get())
     {
         //[UserButtonCode_TBenablePreProc] -- add your button handler code here..
@@ -1048,6 +1049,22 @@ void PluginEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 
     //[UsersliderValueChanged_Post]
     //[/UsersliderValueChanged_Post]
+}
+
+void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
+{
+    //[UsercomboBoxChanged_Pre]
+    //[/UsercomboBoxChanged_Pre]
+
+    if (comboBoxThatHasChanged == CBinterpMode.get())
+    {
+        //[UserComboBoxCode_CBinterpMode] -- add your combo box handling code here..
+        roombinauraliser_setInterpMode(hBin, CBinterpMode->getSelectedId());
+        //[/UserComboBoxCode_CBinterpMode]
+    }
+
+    //[UsercomboBoxChanged_Post]
+    //[/UsercomboBoxChanged_Post]
 }
 
 
@@ -1105,6 +1122,8 @@ void PluginEditor::timerCallback(int timerID)
                     SL_num_sources->setEnabled(false);
                 if(TBuseDefaultHRIRs->isEnabled())
                     TBuseDefaultHRIRs->setEnabled(false);
+                if(CBinterpMode->isEnabled())
+                    CBinterpMode->setEnabled(false);
                 /*
                 if(tb_loadJSON->isEnabled())
                     tb_loadJSON->setEnabled(false);
@@ -1121,6 +1140,8 @@ void PluginEditor::timerCallback(int timerID)
                     SL_num_sources->setEnabled(true);
                 if(!TBuseDefaultHRIRs->isEnabled())
                     TBuseDefaultHRIRs->setEnabled(true);
+                if(!CBinterpMode->isEnabled())
+                    CBinterpMode->setEnabled(true);
                 /*
                 if(!tb_loadJSON->isEnabled())
                     tb_loadJSON->setEnabled(true);
@@ -1220,7 +1241,7 @@ BEGIN_JUCER_METADATA
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="12 104 196 249" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <RECT pos="440 312 266 41" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="446 312 260 41" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
     <RECT pos="712 58 196 78" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
@@ -1238,15 +1259,15 @@ BEGIN_JUCER_METADATA
     <TEXT pos="720 58 160 30" fill="solid: ffffffff" hasStroke="0" text="Use Default BRIR set:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="448 319 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Emitters:"
+    <TEXT pos="455 319 132 30" fill="solid: ffffffff" hasStroke="0" text="Show Emitters:"
           fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <TEXT pos="589 319 110 30" fill="solid: ffffffff" hasStroke="0" text="Show BRIRs:"
+    <TEXT pos="590 319 110 30" fill="solid: ffffffff" hasStroke="0" text="Show BRIRs:"
           fontname="Default font" fontsize="14.5" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
-    <RECT pos="214 312 218 41" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
+    <RECT pos="214 312 233 41" fill="solid: 10f4f4f4" hasStroke="1" stroke="0.8, mitered, butt"
           strokeColour="solid: 67a0a0a0"/>
-    <TEXT pos="222 319 170 30" fill="solid: ffffffff" hasStroke="0" text="Partitioned Convolution:"
+    <TEXT pos="222 319 170 30" fill="solid: ffffffff" hasStroke="0" text="Interp. Mode:"
           fontname="Default font" fontsize="15.0" kerning="0.0" bold="1"
           italic="0" justification="33" typefaceStyle="Bold"/>
     <TEXT pos="719 158 89 30" fill="solid: ffffffff" hasStroke="0" text="HRIR/DAW Fs:"
@@ -1333,7 +1354,7 @@ BEGIN_JUCER_METADATA
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <TOGGLEBUTTON name="new toggle button" id="74817bb8a57611dc" memberName="TB_showInputs"
-                virtualName="" explicitFocusOrder="0" pos="551 322 24 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="555 322 24 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TOGGLEBUTTON name="new toggle button" id="1a1dfbb1d4296140" memberName="TB_showOutputs"
                 virtualName="" explicitFocusOrder="0" pos="672 322 24 24" buttonText=""
@@ -1385,12 +1406,12 @@ BEGIN_JUCER_METADATA
          edBkgCol="0" labelText="1&#10;" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15.0"
          kerning="0.0" bold="0" italic="0" justification="34"/>
-  <TOGGLEBUTTON name="new toggle button" id="470d6e595fa6d15e" memberName="TBenablePartConv"
-                virtualName="" explicitFocusOrder="0" pos="395 322 24 24" buttonText=""
-                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
   <TOGGLEBUTTON name="new toggle button" id="39915eece3ee5005" memberName="TBenablePreProc"
                 virtualName="" explicitFocusOrder="0" pos="878 109 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
+  <COMBOBOX name="new combo box" id="60b57c53e35f0790" memberName="CBinterpMode"
+            virtualName="" explicitFocusOrder="0" pos="316 322 125 24" editable="0"
+            layout="33" items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
