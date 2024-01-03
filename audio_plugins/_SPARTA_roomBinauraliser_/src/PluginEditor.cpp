@@ -230,7 +230,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     //CBexternalizationMode->setTextWhenNothingSelected(juce::String());
     CBexternalizationMode->setTextWhenNoChoicesAvailable(TRANS("(no choices)"));
     CBexternalizationMode->addListener(this);
-    CBexternalizationMode->setEnabled(false);
+    //CBexternalizationMode->setEnabled(false);
     CBexternalizationMode->setBounds (718, 141, 180, 20);
 
     //[UserPreSize]
@@ -259,13 +259,13 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     SL_num_sources->setColour(Slider::trackColourId, Colours::transparentBlack);
 
     /* interp modes */
-        CBinterpMode->addItem(TRANS("Triangular"), INTERP_TRI);
-        CBinterpMode->addItem(TRANS("Triangular (PS)"), INTERP_TRI_PS);
+    CBinterpMode->addItem(TRANS("Triangular"), INTERP_TRI);
+    CBinterpMode->addItem(TRANS("Triangular (PS)"), INTERP_TRI_PS);
 
     /* externalization modes */
-        CBexternalizationMode->addItem(TRANS("FABIAN CTF"), EXTERN_FABIAN_CTF);
-        CBexternalizationMode->addItem(TRANS("BRIR CTF"), EXTERN_BRIR_CTF);
-        CBexternalizationMode->setSelectedId(1);
+    CBexternalizationMode->addItem(TRANS("FABIAN CTF"), DIFF_EQ_FABIAN_CTF);
+    CBexternalizationMode->addItem(TRANS("BRIR CTF"), DIFF_EQ_BRIR_CTF);
+    CBexternalizationMode->setSelectedId(1);
 
     /* ProgressBar */
     progress = 0.0;
@@ -1029,17 +1029,9 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == TBenablePreProc.get())
     {
         //[UserButtonCode_TBenablePreProc] -- add your button handler code here..
-        CBexternalizationMode->setEnabled(TBenablePreProc->getToggleState());
-        switch(roombinauraliser_getExternMode(hBin)) {
-            case EXTERN_MODES::EXTERN_FABIAN_CTF:
-                roombinauraliser_setEnableBRIRsDiffuseEQ(hBin, (int)TBenablePreProc->getToggleState(), EXTERN_FABIAN_CTF);
-                break;
-            case EXTERN_MODES::EXTERN_BRIR_CTF:
-                roombinauraliser_setEnableBRIRsDiffuseEQ(hBin, (int)TBenablePreProc->getToggleState(), EXTERN_BRIR_CTF);
-                break;
-            case EXTERN_MODES ::NO_EXTERN:
-                break;
-        }
+        //CBexternalizationMode->setEnabled(TBenablePreProc->getToggleState());
+        roombinauraliser_setEnableBRIRsDiffuseEQ(hBin, (int)buttonThatWasClicked->getToggleState());
+
         //[/UserButtonCode_TBenablePreProc]
     }
 
@@ -1089,7 +1081,8 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
     else if (comboBoxThatHasChanged == CBexternalizationMode.get())
     {
         //[UserComboBoxCode_CBexternMode] -- add your combo box handling code here..
-        roombinauraliser_setExternMode(hBin, CBexternalizationMode->getSelectedId());
+        int id = CBexternalizationMode->getSelectedId();
+        roombinauraliser_setDiffuseEqMode(hBin, CBexternalizationMode->getSelectedId());
         //[/UserComboBoxCode_CBexternMode]
     }
 
