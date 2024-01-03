@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 7.0.5
+  Created with Projucer version: 7.0.9
 
   ------------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ pannerView::pannerView (PluginProcessor* ownerFilter, int _width, int _height)
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (492, 246);
+    setSize (492, 286);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -87,7 +87,7 @@ void pannerView::paint (juce::Graphics& g)
     //[/UserPrePaint]
 
     {
-        int x = 0, y = 0, width = 492, height = 246;
+        int x = 0, y = 0, width = 492, height = 286;
         juce::Colour fillColour1 = juce::Colour (0xff4e4e4e), fillColour2 = juce::Colour (0xff202020);
         juce::Colour strokeColour = juce::Colour (0xff9e9e9e);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -286,12 +286,12 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="pannerView" componentName=""
                  parentClasses="public Component" constructorParams="PluginProcessor* ownerFilter, int _width, int _height"
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="492" initialHeight="246">
+                 overlayOpacity="0.330" fixedSize="1" initialWidth="492" initialHeight="286">
   <METHODS>
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
   </METHODS>
   <BACKGROUND backgroundColour="323e44">
-    <RECT pos="0 0 492 246" fill="linear: 248 0, 248 248, 0=ff4e4e4e, 1=ff202020"
+    <RECT pos="0 0 492 286" fill="linear: 248 0, 248 248, 0=ff4e4e4e, 1=ff202020"
           hasStroke="1" stroke="1, mitered, butt" strokeColour="solid: ff9e9e9e"/>
   </BACKGROUND>
 </JUCER_COMPONENT>
