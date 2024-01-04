@@ -139,6 +139,7 @@ private:
     std::unique_ptr<juce::Label> SL_num_sources;
     std::unique_ptr<juce::ToggleButton> TBenablePreProc;
     std::unique_ptr<juce::ComboBox> CBinterpMode;
+    std::unique_ptr<juce::ComboBox> CBexternalizationMode;
 
 
     //==============================================================================
@@ -147,4 +148,3 @@ private:
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
-
