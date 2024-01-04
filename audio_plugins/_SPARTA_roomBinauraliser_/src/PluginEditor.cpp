@@ -1030,7 +1030,7 @@ void PluginEditor::buttonClicked (juce::Button* buttonThatWasClicked)
     {
         //[UserButtonCode_TBenablePreProc] -- add your button handler code here..
         //CBexternalizationMode->setEnabled(TBenablePreProc->getToggleState());
-        //roombinauraliser_setEnableBRIRsDiffuseEQ(hBin, (int)buttonThatWasClicked->getToggleState());
+        roombinauraliser_setEnableHRIRsDiffuseEQ(hBin, (int)buttonThatWasClicked->getToggleState());
 
         //[/UserButtonCode_TBenablePreProc]
     }
@@ -1082,7 +1082,7 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
     {
         //[UserComboBoxCode_CBexternMode] -- add your combo box handling code here..
         int id = CBexternalizationMode->getSelectedId();
-        //roombinauraliser_setDiffuseEqMode(hBin, CBexternalizationMode->getSelectedId());
+        roombinauraliser_setDiffuseEqMode(hBin, CBexternalizationMode->getSelectedId());
         //[/UserComboBoxCode_CBexternMode]
     }
 
