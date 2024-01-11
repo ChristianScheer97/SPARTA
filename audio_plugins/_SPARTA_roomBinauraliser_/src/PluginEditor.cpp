@@ -227,10 +227,8 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     addAndMakeVisible(CBexternalizationMode.get());
     CBexternalizationMode->setEditableText(false);
     CBexternalizationMode->setJustificationType(juce::Justification::centredLeft);
-    //CBexternalizationMode->setTextWhenNothingSelected(juce::String());
     CBexternalizationMode->setTextWhenNoChoicesAvailable(TRANS("(no choices)"));
     CBexternalizationMode->addListener(this);
-    //CBexternalizationMode->setEnabled(false);
     CBexternalizationMode->setBounds (718, 141, 180, 20);
 
     //[UserPreSize]
@@ -265,7 +263,7 @@ PluginEditor::PluginEditor (PluginProcessor* ownerFilter)
     /* externalization modes */
     CBexternalizationMode->addItem(TRANS("FABIAN CTF"), DIFF_EQ_FABIAN_CTF);
     CBexternalizationMode->addItem(TRANS("BRIR CTF"), DIFF_EQ_BRIR_CTF);
-    CBexternalizationMode->setSelectedId(1);
+    CBexternalizationMode->setSelectedId(1, dontSendNotification);
 
     /* ProgressBar */
     progress = 0.0;
@@ -1081,8 +1079,8 @@ void PluginEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
     else if (comboBoxThatHasChanged == CBexternalizationMode.get())
     {
         //[UserComboBoxCode_CBexternMode] -- add your combo box handling code here..
-        int id = CBexternalizationMode->getSelectedId();
         roombinauraliser_setDiffuseEqMode(hBin, CBexternalizationMode->getSelectedId());
+        roombinauraliser_setEnableHRIRsDiffuseEQ(hBin, (int)TBenablePreProc->getToggleState());
         //[/UserComboBoxCode_CBexternMode]
     }
 
