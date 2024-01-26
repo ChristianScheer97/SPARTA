@@ -6,3 +6,7 @@
 	path = SDKs/JUCE
 	url = https://github.com/juce-framework/JUCE.git
 	shallow = true
+[submodule "SDKs/netcdf-c"]
+	path = SDKs/netcdf-c
+	url = https://github.com/Unidata/netcdf-c
+	shallow = true
