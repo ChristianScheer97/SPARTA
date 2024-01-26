@@ -388,7 +388,7 @@
             windowsTargetPlatformVersion="Latest">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/Intel/oneAPI/mkl/latest/include&#10;C:/Program Files (x86)/Intel/oneAPI/ipp/latest/include&#10;C:\Program Files\netCDF 4.9.2\include"
-                       libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib&#10;C:\Program Files\netCDF 4.9.2\lib&#10;"
+                       libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib&#10;C:\Program Files\netcdf-c\lib&#10;"
                        targetName="sparta_roomBinauraliser_debug" linkTimeOptimisation="1"/>
         <CONFIGURATION isDebug="0" name="Release" headerPath="../../../../../SDKs/Spatial_Audio_Framework/framework/include&#10;../../../../../SDKs/Spatial_Audio_Framework/examples/include&#10;../../../../../SDKs/VST2_SDK&#10;C:/Program Files (x86)/Intel/oneAPI/mkl/latest/include&#10;C:/Program Files (x86)/Intel/oneAPI/ipp/latest/include"
                        libraryPath="../../../../../SDKs/Spatial_Audio_Framework/dependencies/Win64/lib"
