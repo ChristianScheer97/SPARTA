@@ -266,6 +266,17 @@
         <FILE id="aSu5hw" name="CMakeLists.txt" compile="0" resource="1" file="../../SDKs/Spatial_Audio_Framework/framework/CMakeLists.txt"/>
       </GROUP>
     </GROUP>
+    <GROUP id="{32971D22-E931-FBD0-77E6-5371F3DC7EB1}" name="Partitioned-Convolution">
+      <GROUP id="{0048A4E6-265F-B0AE-37D9-44F22F19F50D}" name="lib">
+        <FILE id="ReN7az" name="Convolution.c" compile="1" resource="0" file="../../SDKs/Partitioned-Convolution/lib/Convolution.c"/>
+        <FILE id="pjeCU1" name="Convolution.h" compile="0" resource="0" file="../../SDKs/Partitioned-Convolution/lib/Convolution.h"/>
+        <FILE id="B2Drg1" name="DFT.c" compile="1" resource="0" file="../../SDKs/Partitioned-Convolution/lib/DFT.c"/>
+        <FILE id="E2UDAP" name="DFT.h" compile="0" resource="0" file="../../SDKs/Partitioned-Convolution/lib/DFT.h"/>
+        <FILE id="ft7AC0" name="fastsin.c" compile="1" resource="0" file="../../SDKs/Partitioned-Convolution/lib/fastsin.c"/>
+        <FILE id="ZYK3Bo" name="fastsin.h" compile="0" resource="0" file="../../SDKs/Partitioned-Convolution/lib/fastsin.h"/>
+      </GROUP>
+      <FILE id="M1xGgb" name="README.md" compile="0" resource="1" file="../../SDKs/Partitioned-Convolution/README.md"/>
+    </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
     <VS2017 targetFolder="make/win64/VisualStudio2017" externalLibraries="saf_mkl_custom_lp64.lib&#10;saf_ipp_custom.lib"
