@@ -6,3 +6,7 @@
 	path = SDKs/JUCE
 	url = https://github.com/juce-framework/JUCE.git
 	shallow = true
+[submodule "SDKs/Partitioned-Convolution"]
+	path = SDKs/Partitioned-Convolution
+	url = https://github.com/michaelkrzyzaniak/Partitioned-Convolution.git
+	shallow = true
