@@ -8,5 +8,6 @@
 	shallow = true
 [submodule "SDKs/Partitioned-Convolution"]
 	path = SDKs/Partitioned-Convolution
-	url = https://github.com/michaelkrzyzaniak/Partitioned-Convolution.git
+	url = https://github.com/lukasbrichter/Partitioned-Convolution.git
 	shallow = true
+	branch = main
